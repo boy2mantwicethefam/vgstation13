@@ -2036,3 +2036,7 @@ mob/living/carbon/human/isincrit()
 /mob/living/carbon/human/make_meat(location)
 	var/ourMeat = new meat_type(location, src)
 	return ourMeat	//Exists due to meat having a special New()
+
+//Do not render the human icon, it is buggy.
+/mob/living/carbon/human/examine(mob/user, show_icon = FALSE)
+	..()

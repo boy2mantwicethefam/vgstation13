@@ -65,7 +65,7 @@
 	else if(src.gender == PLURAL)
 		pronoun = "they are"
 
-	..(user, " [capitalize(pronoun)] [size].", show_name, FALSE)
+	..(user, " [capitalize(pronoun)] [size].", show_name, show_icon)
 	if(meat_taken > 0)
 		to_chat(user, "<span class='info'>[capitalize(pronoun)] partially butchered.</span>")
 
