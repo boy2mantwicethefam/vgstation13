@@ -639,16 +639,16 @@
 				to_chat(src, "<span class='warning'>That creature was only bones, and didn't quite satisfy your hunger...</span>")
 			else
 				to_chat(src, "<span class='warning'>That creature didn't quite satisfy your hunger...</span>")
-		E.drop_all()
 		if(can_skeletonize(E))
 			var/mob/living/carbon/human/H = E
+			H.death(FALSE) //Calling it before drop_all so that it properly triggers SPS and such
+			H.drop_all()
 			gibs(H.loc, H.virus2, H.dna, H.species.flesh_color, H.species.blood_color)
 			if(isvox(H))
 				H.set_species("Skeletal Vox")
 			else
 				H.set_species("Skellington")
 			H.regenerate_icons()
-			H.death(FALSE)
 		else //Eat the mob otherwise
 			E.gib()
 	busy=FALSE
