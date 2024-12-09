@@ -640,9 +640,9 @@
   * * mob/user - the user who will see the progress bar
   * * atom/target - the atom the progress bar will be attached to
   * * delay - duration in deciseconds of the delay
-  * * numticks - how many times the failure conditions will be checked throughout the duration
-  * * needhand - if TRUE, the item in the hands of the user needs to stay the same throughout the duration
-  * * use_user_turf - if TRUE, the turf of the user is checked instead of its location
+  * * numticks - how many times the failure conditions will be checked throughout the duration. default 10
+  * * needhand - if TRUE, the item in the hands of the user needs to stay the same throughout the duration. default TRUE
+  * * use_user_turf - if TRUE, the turf of the user is checked instead of its location. default FALSE
   * * custom_checks - if specified, the return value of this callback (called every `delay/numticks` seconds) will determine whether the action succeeded
   */
 /proc/do_after(var/mob/user as mob, var/atom/target, var/delay as num, var/numticks = 10, var/needhand = TRUE, var/use_user_turf = FALSE, callback/custom_checks)
@@ -761,108 +761,6 @@
 /datum/coords/proc/add(var/datum/coords/C)
 	var/datum/coords/CR = new(x_pos+C.x_pos,y_pos+C.y_pos,z_pos+C.z_pos)
 	return CR
-
-// If you're looking at this proc and thinking "that's exactly what I need!"
-// then you're wrong and you need to take a step back and reconsider.
-/atom/movable/proc/DuplicateObject(var/location)
-	var/atom/movable/duplicate = new src.type(location)
-	duplicate.change_dir(dir)
-	duplicate.plane = plane
-	duplicate.layer = layer
-	duplicate.name = name
-	duplicate.desc = desc
-	duplicate.pixel_x = pixel_x
-	duplicate.pixel_y = pixel_y
-	duplicate.pixel_w = pixel_w
-	duplicate.pixel_z = pixel_z
-	return duplicate
-
-/area/proc/copy_contents_to(area/A , platingRequired = FALSE)
-	//Takes: Area. Optional: If it should copy to areas that don't have plating
-	//Returns: Nothing.
-	//Notes: Attempts to move the contents of one area to another area.
-	//       Movement based on lower left corner. Tiles that do not fit
-	//		 into the new area will not be moved.
-
-	if(!A || !src)
-		return 0
-
-	var/list/turfs_src = get_area_turfs(src.type)
-	var/list/turfs_trg = get_area_turfs(A.type)
-
-	var/src_min_x = 0
-	var/src_min_y = 0
-	for (var/turf/T in turfs_src)
-		if(T.x < src_min_x || !src_min_x)
-			src_min_x	= T.x
-		if(T.y < src_min_y || !src_min_y)
-			src_min_y	= T.y
-
-	var/trg_min_x = 0
-	var/trg_min_y = 0
-	for (var/turf/T in turfs_trg)
-		if(T.x < trg_min_x || !trg_min_x)
-			trg_min_x	= T.x
-		if(T.y < trg_min_y || !trg_min_y)
-			trg_min_y	= T.y
-
-	var/list/refined_src = new/list()
-	for(var/turf/T in turfs_src)
-		refined_src += T
-		refined_src[T] = new/datum/coords
-		var/datum/coords/C = refined_src[T]
-		C.x_pos = (T.x - src_min_x)
-		C.y_pos = (T.y - src_min_y)
-
-	var/list/refined_trg = new/list()
-	for(var/turf/T in turfs_trg)
-		refined_trg += T
-		refined_trg[T] = new/datum/coords
-		var/datum/coords/C = refined_trg[T]
-		C.x_pos = (T.x - trg_min_x)
-		C.y_pos = (T.y - trg_min_y)
-
-	var/list/copiedobjs = list()
-
-	moving:
-		for (var/turf/T in refined_src)
-			var/datum/coords/C_src = refined_src[T]
-			for (var/turf/B in refined_trg)
-				var/datum/coords/C_trg = refined_trg[B]
-				if(C_src.x_pos == C_trg.x_pos && C_src.y_pos == C_trg.y_pos)
-					var/old_name = T.name
-					var/old_dir = T.dir
-					var/old_icon_state = T.icon_state
-					var/old_icon = T.icon
-
-					if(platingRequired)
-						if(istype(B, /turf/space))
-							continue moving
-
-					B.ChangeTurf(T.type)
-					B.name = old_name
-					B.dir = old_dir
-					B.icon_state = old_icon_state
-					B.icon = old_icon
-
-					B.return_air().copy_from(T.return_air())
-
-					for(var/obj/O in T)
-						copiedobjs += O.DuplicateObject(B)
-
-					for(var/mob/M in T)
-						if(!M.can_shuttle_move())
-							continue
-						copiedobjs += M.DuplicateObject(B)
-
-					refined_src -= T
-					refined_trg -= B
-					continue moving
-
-	for(var/obj/machinery/door/new_door in copiedobjs)
-		new_door.update_nearby_tiles()
-
-	return copiedobjs
 
 /proc/view_or_range(distance = world.view , center = usr , type)
 	switch(type)
@@ -1218,7 +1116,7 @@ var/mob/dview/tview/tview_mob = new()
 		result = "-[result]"
 	return result
 
-/proc/get_random_colour(var/simple, var/lower, var/upper)
+/proc/get_random_colour(var/simple = FALSE, var/lower = 0, var/upper = 255)
 	var/colour
 	if(simple)
 		colour = pick(list("FF0000","FF7F00","FFFF00","00FF00","0000FF","4B0082","8F00FF"))
@@ -1373,52 +1271,6 @@ Game Mode config tags:
 	if(!istype(T2))
 		T2 = get_turf(B)
 	return sqrt(((T2.x - T1.x) ** 2) + ((T2.y - T1.y) ** 2))
-
-/proc/seedify(obj/item/O, obj/machinery/seed_extractor/extractor = null, mob/living/user = null)
-	if(!O)
-		CRASH("Something called seedify() without anything to make seeds of.")
-
-	var/min_seeds = 1
-	var/max_seeds = 4
-	var/seedloc = O.loc
-	var/datum/seed/new_seed_type
-
-	if(extractor)
-		seedloc = get_turf(extractor)
-		min_seeds = extractor.min_seeds
-		max_seeds = extractor.max_seeds
-
-	var/produce = rand(min_seeds,max_seeds)
-
-	if(istype(O, /obj/item/weapon/grown))
-		var/obj/item/weapon/grown/F = O
-		if(F.plantname)
-			new_seed_type = SSplant.seeds[F.plantname]
-	else
-		if(istype(O, /obj/item/weapon/reagent_containers/food/snacks/grown))
-			var/obj/item/weapon/reagent_containers/food/snacks/grown/F = O
-			if(F.plantname)
-				new_seed_type = SSplant.seeds[F.plantname]
-		else
-			var/obj/item/F = O
-			if(F.nonplant_seed_type)
-				while(min_seeds <= produce)
-					new F.nonplant_seed_type(seedloc)
-					min_seeds++
-				qdel(F)
-				return TRUE
-
-	if(new_seed_type)
-		while(min_seeds <= produce)
-			var/obj/item/seeds/seeds = new(seedloc)
-			seeds.seed_type = new_seed_type.name
-			seeds.update_seed()
-			min_seeds++
-	else
-		return FALSE
-
-	qdel(O)
-	return TRUE
 
 //Same as block(Start, End), but only returns the border turfs
 //'Start' must be lower-left, 'End' must be upper-right
