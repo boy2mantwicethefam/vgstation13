@@ -129,9 +129,9 @@ var/station_bonus = 0 //A bonus to station allowance that gets reset after wage 
 	var/remote_access_pin = 0
 	var/money = 0
 	var/list/transaction_log = list()
-	var/security_level = 1	//0 - auto-identify from worn ID, require only account number
-							//1 - require manual login / account number and pin
-							//2 - require card and manual login
+	var/security_level = SECURITY_MANUAL_LOGIN	//0 - auto-identify from worn ID, require only account number
+												//1 - require manual login / account number and pin
+												//2 - require card and manual login
 	var/virtual = 0
 	var/virtual_wallet_wage_ratio = 50
 	var/wage_gain = 0 // How much an account gains per 'wage' tick.
@@ -326,7 +326,7 @@ var/station_bonus = 0 //A bonus to station allowance that gets reset after wage 
 							<td><a href='?src=\ref[src];choice=view_account_detail;account_index=[i]'>View in detail</a></td>
 							</tr>"}
 					dat += "</table>"
-		user << browse(dat,"window=account_db;size=700x650")
+		user << browse(HTML_SKELETON(dat),"window=account_db;size=700x650")
 	else
 		user << browse(null,"window=account_db")
 
@@ -348,11 +348,8 @@ var/station_bonus = 0 //A bonus to station allowance that gets reset after wage 
 					access_level = 1
 	if(issolder(O) && emagged)
 		var/obj/item/tool/solder/S = O
-		if(!S.remove_fuel(4,user))
-			return
-		playsound(loc, 'sound/items/Welder.ogg', 100, 1)
-		if(do_after(user, src,4 SECONDS * S.work_speed))
-			playsound(loc, 'sound/items/Welder.ogg', 100, 1)
+		if(S.do_solder(user, src,4 SECONDS,4))
+			S.playtoolsound(loc, 100)
 			emagged = FALSE
 			access_level = 0
 			to_chat(user, "<span class='notice'>You repair the security checks on \the [src].</span>")

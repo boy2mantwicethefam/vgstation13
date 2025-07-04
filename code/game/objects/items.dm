@@ -92,6 +92,7 @@
 	var/list/quick_equip_priority = list() //stuff to override the quick equip thing so it goes in this first
 
 	var/last_burn
+	var/vent_use = FALSE //can this be used while ventcrawling
 
 /obj/item/New()
 	..()
@@ -1687,6 +1688,7 @@ var/global/objects_thrown_when_explode = FALSE
 		armor["melee"] = min(90, armor["melee"]*(material_type.armor_mod*(quality/B_AVERAGE)))
 		armor["bullet"] = min(90, armor["bullet"]*(material_type.armor_mod*(quality/B_AVERAGE)))
 		armor["laser"] = min(90, armor["laser"]*(material_type.armor_mod*(quality/B_AVERAGE)))
+	toolspeed = fancytrunc(toolspeed * (0.6687**(quality-4)),2)
 
 /////// DISEASE STUFF //////////////////////////////////////////////////////////////////////////
 
@@ -1773,7 +1775,7 @@ var/global/objects_thrown_when_explode = FALSE
 	extinguish_with_hands(user)
 
 /obj/item/proc/extinguish_with_hands(var/mob/user)
-	if(!isliving(user))
+	if(user.stat || !Adjacent(user, src) || !isliving(user))
 		return
 	if(src.on_fire)
 		extinguish()

@@ -58,13 +58,13 @@
 	var/image/extra_food_overlay
 
 /obj/item/weapon/reagent_containers/food/snacks/Destroy()
-	QDEL_NULL(dip)
 	var/turf/T = get_turf(src)
 	if(contents.len)
 		for(var/atom/movable/A in src)
 			A.forceMove(T)
 		visible_message("<span class='warning'>The items sloppily placed within fall out of \the [src]!</span>")
 	..()
+	QDEL_NULL(dip)
 
 //Proc for effects that trigger on eating that aren't directly tied to the reagents.
 /obj/item/weapon/reagent_containers/food/snacks/proc/after_consume(var/mob/user, var/datum/reagents/reagentreference)
@@ -597,7 +597,7 @@
 			return 1
 		if(slice_act(user,W))
 			return 1
-		
+
 	if (istype(W, /obj/item/candle)) //candles added on afterattack
 		return 0
 
@@ -1662,6 +1662,18 @@
 	reagents.add_reagent(NUTRIMENT, 6)
 	reagents.add_reagent(SILENCER, 6)
 	bitesize = 2
+
+/obj/item/weapon/reagent_containers/food/snacks/nothingburger/New()
+	..()
+	reagents.add_reagent(NUTRIMENT, 6)
+	reagents.add_reagent(NOTHING, 6)
+	bitesize = 2
+
+/obj/item/weapon/reagent_containers/food/snacks/nothingburger
+	name = "nothingburger"
+	desc = "The chef really oversold these."
+	icon_state = "nothingburger"
+	base_crumb_chance = 20
 
 /obj/item/weapon/reagent_containers/food/snacks/donutburger
 	name = "donut burger"
@@ -4359,7 +4371,7 @@
 	base_crumb_chance = 20
 
 /obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/on_vending_machine_spawn()
-	reagents.chem_temp = FRIDGETEMP_FREEZER
+	reagents.chem_temp = COOKTEMP_READY
 
 /obj/item/weapon/reagent_containers/food/snacks/sliceable/pizza/margherita
 	name = "Margherita"
@@ -5754,6 +5766,20 @@
 	name = "quiet slider"
 	desc = "..."
 	icon_state = "slider_mime"
+
+/obj/item/weapon/reagent_containers/food/snacks/slider/nothing
+	name = "nothingslider"
+	desc = "It's less than nothing!"
+	icon_state = "slider_nothing"
+
+/obj/item/weapon/reagent_containers/food/snacks/multispawner/slider/nothing
+	name = "nothingsliders"
+	child_type = /obj/item/weapon/reagent_containers/food/snacks/slider/nothing
+	child_volume = 5
+
+/obj/item/weapon/reagent_containers/food/snacks/multispawner/slider/nothing/New()
+	..()
+	reagents.add_reagent(NOTHING, 10)
 
 /obj/item/weapon/reagent_containers/food/snacks/multispawner/slider/slippery
 	name = "slippery sliders"
