@@ -1420,6 +1420,12 @@ var/proccalls = 1
 #define ORE_PROCESSING_ALLOY 2
 
 //SOUND CHANNELS
+#define CHANNEL_SHARED_MIN			1
+#define CHANNEL_SHARED_MAX			256
+#define CHANNEL_UNIQUE_MIN			257
+#define CHANNEL_UNIQUE_MAX			512
+#define CHANNEL_MUS_RESERVABLE_MIN  513
+#define CHANNEL_MUS_RESERVABLE_MAX  1017	// todo check if it even needs nearly this many
 #define CHANNEL_WEATHER				1018
 #define CHANNEL_MEDBOTS				1019
 #define CHANNEL_BALLOON				1020

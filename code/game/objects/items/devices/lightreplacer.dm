@@ -80,18 +80,21 @@ This used to be handled by attackby() on the light fixtures and bulbs themselves
 	if(!gather_loc || !isturf(gather_loc))
 		return 0
 	var/obj/machinery/light/lightfixture = locate() in gather_loc.contents
-	var/obj/item/weapon/light/best_light = get_best_light(lightfixture)
-	if(lightfixture && lightfixture.current_bulb && is_light_better(best_light, lightfixture.current_bulb))
-		. = ReplaceLight(lightfixture, usr)
-		return .
-	else if(lightfixture && !lightfixture.current_bulb)
-		. = ReplaceLight(lightfixture, usr)
-		if(.)
-			return .
-	else
+	if(!lightfixture)
+		// No light fixture found, try to gather light items from the turf
 		for(var/obj/O in gather_loc.contents)
 			. = insert_if_possible(O)
 		return .
+	
+	var/obj/item/weapon/light/best_light = get_best_light(lightfixture)
+	if(!best_light)
+		return 0
+	
+	// Replace light if fixture has no bulb or if we have a better bulb
+	if(!lightfixture.current_bulb || is_light_better(best_light, lightfixture.current_bulb))
+		return ReplaceLight(lightfixture, user)
+	
+	return 0
 
 /obj/item/device/lightreplacer/attackby(obj/item/W, mob/user)
 	if(istype(W, /obj/item/stack/sheet/glass/glass))
