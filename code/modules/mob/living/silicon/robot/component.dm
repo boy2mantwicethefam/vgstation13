@@ -182,32 +182,34 @@
 	var/datum/robot_component/C = components[module_name]
 	return C && C.installed == COMPONENT_INSTALLED && C.toggled && C.is_powered()
 
-/*/mob/living/silicon/robot/proc/exchange_parts(mob/user, obj/item/weapon/storage/bag/gadgets/part_replacer/W)
+/mob/living/silicon/robot/proc/exchange_parts(mob/user, obj/item/weapon/storage/bag/gadgets/part_replacer/W)
 	if (W.bluespace || wiresexposed || opened)
 		var/shouldplaysound = FALSE
 		for(var/V in components)
 			var/datum/robot_component/C = components[V]
-			if(!C.installed)
-				for(var/obj/item/robot_parts/robot_component/I in W.contents)
-					if((I.isupgrade && !C.upgraded) && istype(I, C.external_type))
-						C.uninstall(user)
+			if(istype(C.wrapped,/obj/item/weapon/cell))
+				var/obj/item/weapon/cell/cell = C.wrapped
+				for(var/obj/item/weapon/cell/I2 in W.contents)
+					if((I2.rating > cell.rating))
 						if(C.wrapped)
 							W.handle_item_insertion(C.wrapped, 1)
-						C.install(user,I)
-						W.remove_from_storage(I, null)
+						C.uninstall(user)
+						C.install(user,I2)
+						W.remove_from_storage(I2, null)
+						I2.forceMove(src)
 						shouldplaysound = TRUE //Only play the sound when parts are actually replaced!
 						break
-				if(istype(C.wrapped,/obj/item/weapon/cell))
-					var/obj/item/weapon/cell/cell = C.wrapped
-					for(var/obj/item/weapon/cell/I2 in W.contents)
-						if((I2.rating > cell.rating))
-							C.uninstall(user)
-							if(C.wrapped)
-								W.handle_item_insertion(C.wrapped, 1)
-							C.install(user,I2)
-							W.remove_from_storage(I2, null)
-							shouldplaysound = TRUE //Only play the sound when parts are actually replaced!
-							break
+			else
+				for(var/obj/item/robot_parts/robot_component/I in W.contents)
+					if((I.isupgrade && !C.upgraded) && istype(I, C.external_type))
+						if(C.wrapped)
+							W.handle_item_insertion(C.wrapped, 1)
+						C.uninstall(user)
+						C.install(user,I)
+						W.remove_from_storage(I, null)
+						I.forceMove(src)
+						shouldplaysound = TRUE //Only play the sound when parts are actually replaced!
+						break
 		if(shouldplaysound)
 			W.play_rped_sound()
 		else
@@ -215,7 +217,7 @@
 			for(var/V2 in components)
 				var/datum/robot_component/C = components[V2]
 				if(C.wrapped)
-					to_chat(user, "<span class='notice'>    [C.wrapped.name]</span>")*/
+					to_chat(user, "<span class='notice'>    [C.wrapped.name]</span>")
 
 /obj/item/broken_device
 	name = "broken component"
