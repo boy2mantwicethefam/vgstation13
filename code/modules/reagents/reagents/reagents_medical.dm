@@ -202,8 +202,8 @@
 /datum/reagent/antipathogenic/tomato_soup/on_mob_life(var/mob/living/M)
 	..()
 
-	if(M.bodytemperature < 310) //310 is the normal bodytemp. 310.055
-		M.bodytemperature = min(310, M.bodytemperature + (5 * TEMPERATURE_DAMAGE_COEFFICIENT))
+	if(M.bodytemperature < BODYTEMP_DEFAULT)
+		M.bodytemperature = min(BODYTEMP_DEFAULT, M.bodytemperature + (5 * TEMPERATURE_DAMAGE_COEFFICIENT))
 
 //natural antipathogenic, found in garlic and kudzu
 /datum/reagent/antipathogenic/allicin
@@ -644,7 +644,7 @@ var/global/list/charcoal_doesnt_remove=list(
 /datum/reagent/cargonanobots
 	name = "Cargonian Nanobots"
 	id = CARGONANOBOTS
-	description = "Microscopic robots intended for use in humans. Configured for departmental seccession and overthrowals."
+	description = "Microscopic robots intended for use in humans. Configured for departmental secession and overthrowals."
 	reagent_state = REAGENT_STATE_SOLID
 	dupeable = FALSE
 	color = "#A05F3F" //rgb: 52, 63, 66
@@ -720,8 +720,8 @@ var/global/list/charcoal_doesnt_remove=list(
 	density = 3.9
 	specheatcap = 0.12812
 	custom_metabolism = 0.1
-	fission_time=6000 // 100 minutes (1hr 40)
-	fission_absorbtion=5000
+	fission_time=3000 // 50 minutes
+	fission_absorbtion=10000
 
 /datum/reagent/degeneratecalcium/on_mob_life(var/mob/living/M)
 	if(..())
@@ -922,8 +922,10 @@ var/global/list/charcoal_doesnt_remove=list(
 	if(..())
 		return 1
 
-	M.eye_blurry = max(M.eye_blurry - 5, 0)
-	M.eye_blind = max(M.eye_blind - 5, 0)
+	//Imidazoline will immediately cap eye_blurry and eye_blind at 10, allowing them to fade out over the next few seconds
+	M.eye_blurry = max(min(10,M.eye_blurry--), 0)
+	M.eye_blind = max(min(10,M.eye_blind--), 0)
+
 	if(ishuman(M))
 		var/mob/living/carbon/human/H = M
 		var/datum/organ/internal/eyes/E = H.internal_organs_by_name["eyes"]
@@ -1147,6 +1149,7 @@ var/global/list/charcoal_doesnt_remove=list(
 			if (E.status & ORGAN_BROKEN)
 				E.status &= ~ORGAN_BROKEN //What do I owe you?
 				E.status &= ~ORGAN_SPLINTED //Nothing, it's for free!
+				E.brute_dam = min(E.brute_dam, E.min_broken_damage) //Heal enough to prevent immediate re-fracture
 				holder.remove_reagent(MEDNANOBOTS, 0.10)
 			if (E.status & ORGAN_BLEEDING)
 				E.status &= ~ORGAN_BLEEDING //FOR FREE?!
@@ -1829,8 +1832,8 @@ var/global/list/charcoal_doesnt_remove=list(
 	color = "#C8A5DC" //rgb: 200, 165, 220
 	density = 1.58
 	specheatcap = 0.44
-	fission_time=4800 // 80 minutes (1hr 20)
-	fission_absorbtion=3500
+	fission_time=2400 // 40 minutes
+	fission_absorbtion=7000
 
 /datum/reagent/tricordrazine/on_mob_life(var/mob/living/M)
 	if(..())
@@ -1975,8 +1978,8 @@ var/global/list/charcoal_doesnt_remove=list(
 	if(toxmod==0 || brutemod==0 || firemod==0) //no div 0 here, so sireeeeee, nope.
 		return 1
 
-	var/brut=M.getBruteLoss()
-	var/brn=M.getFireLoss()
+	var/brut=M.getBruteLoss(TRUE)
+	var/brn=M.getFireLoss(TRUE)
 	var/tox=M.getToxLoss()
 
 	var/totaldamage = brut+tox+brn

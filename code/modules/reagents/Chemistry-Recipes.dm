@@ -24,6 +24,8 @@
 
 	var/data = null
 
+	var/reaction_sound = 'sound/effects/bubbles.ogg'
+
 
 /datum/chemical_reaction/proc/log_reaction(var/datum/reagents/holder, var/amt)
 	var/datum/log_controller/I = investigations[I_CHEMS]
@@ -698,6 +700,7 @@
 	result = SODIUMCHLORIDE
 	result_amount = 5
 	quiet = TRUE
+	reaction_sound = 'sound/effects/occult_blood_test.ogg'
 
 /datum/chemical_reaction/occult_blood_test/on_reaction(var/datum/reagents/holder, var/created_volume)
 	for(var/datum/reagent/blood/B in holder.reagent_list)
@@ -709,6 +712,7 @@
 				var/red_flames = 0
 				var/orange_flames = 0
 				var/datum/faction/bloodcult/cult = find_active_faction_by_type(/datum/faction/bloodcult)
+
 				for (var/datum/role/R in cult.members)
 					var/mob/L = R.antag.current
 					if (isliving(L) && !L.isDead())
@@ -717,13 +721,44 @@
 							red_flames++//human or construct on the current Z level
 						else
 							orange_flames++//either a shade or on another Z level
+
+				holder.my_atom.add_particles(PS_CULT_SMOKE)
+				holder.my_atom.add_particles(PS_CULT_SMOKE2)
+				holder.my_atom.adjust_particles(PVAR_SPAWNING, 1, PS_CULT_SMOKE)
+				holder.my_atom.adjust_particles(PVAR_SPAWNING, 1, PS_CULT_SMOKE2)
+				holder.my_atom.adjust_particles(PVAR_PLANE, OBJ_PLANE, PS_CULT_SMOKE)
+				holder.my_atom.adjust_particles(PVAR_PLANE, OBJ_PLANE, PS_CULT_SMOKE2)
+				holder.my_atom.adjust_particles(PVAR_SCALE, 1, PS_CULT_SMOKE)
+				holder.my_atom.adjust_particles(PVAR_SCALE, 1, PS_CULT_SMOKE2)
+
 				if (red_flames)
+					holder.my_atom.add_particles(PS_OCCULT_TEST_LARGE)
+					holder.my_atom.adjust_particles(PVAR_COUNT, red_flames, PS_OCCULT_TEST_LARGE)
 					T.visible_message("<span class='notice'>You count <font color='red'><b>[(red_flames > 1) ? "[red_flames] distinct" : "a single"]</b></font> bright red flame[(red_flames > 1) ? "s":""].</span>")
+
 				if (orange_flames)
+					holder.my_atom.add_particles(PS_OCCULT_TEST_SMALL)
+					holder.my_atom.adjust_particles(PVAR_COUNT, orange_flames, PS_OCCULT_TEST_SMALL)
 					T.visible_message("<span class='notice'>[red_flames ? "As well as" : "You count"] <font color='orange'><b>[(orange_flames > 1) ? "[orange_flames] distinct" : "a single"]</b></font> dim orange flame[(orange_flames > 1) ? "s":""].</span>")
-				playsound(T, 'sound/effects/bubbles.ogg', 80, 1)
+
+				playsound(T, reaction_sound, (10 * red_flames) + (5 * orange_flames), 1)
 				T.hotspot_expose(500 * red_flames + 100 * orange_flames, SMALL_FLAME)
 				holder.remove_reagent(BLOOD, 5)
+
+				spawn(20)
+					holder.my_atom.adjust_particles(PVAR_SPAWNING, 0, PS_OCCULT_TEST_LARGE)
+					holder.my_atom.adjust_particles(PVAR_SPAWNING, 0, PS_OCCULT_TEST_SMALL)
+					holder.my_atom.adjust_particles(PVAR_SPAWNING, 0.3, PS_CULT_SMOKE)
+					holder.my_atom.adjust_particles(PVAR_SPAWNING, 0.3, PS_CULT_SMOKE2)
+					sleep(10)
+					holder.my_atom.adjust_particles(PVAR_SPAWNING, 0, PS_CULT_SMOKE)
+					holder.my_atom.adjust_particles(PVAR_SPAWNING, 0, PS_CULT_SMOKE2)
+					sleep(10)
+					holder.my_atom.remove_particles(PS_OCCULT_TEST_LARGE)
+					holder.my_atom.remove_particles(PS_OCCULT_TEST_SMALL)
+					holder.my_atom.remove_particles(PS_CULT_SMOKE)
+					holder.my_atom.remove_particles(PS_CULT_SMOKE2)
+
 				return
 
 		T.visible_message("<span class='notice'>[bicon(holder.my_atom)] The salts dissolve into the blood without so much as a reaction.</span>")
@@ -1083,6 +1118,16 @@
 
 /datum/chemical_reaction/solidification/plastic/product_to_spawn()
 	return /obj/item/stack/sheet/mineral/plastic
+
+/datum/chemical_reaction/solidification/wood
+	name = "Solid Wood"
+	id = "solidwood"
+	result = null
+	required_reagents = list(SILICATE = 10, FROSTOIL = 10, PULP = U_PER_SHEET)
+	result_amount = 1 //amount of sheets created per the above reagents
+
+/datum/chemical_reaction/solidification/wood/product_to_spawn()
+	return /obj/item/stack/sheet/wood
 
 /datum/chemical_reaction/condensedcapsaicin
 	name = "Condensed Capsaicin"
@@ -2660,10 +2705,22 @@
 	name = "Melted ice"
 	id = WATER
 	result = WATER
-	required_reagents = list(ICE = 1)
-	required_temp = T20C+5
-	result_amount = 1
+	required_reagents = list(ICE = 0.1)
+	required_temp = T0C+10
+	result_amount = 0.1
 	quiet = 1
+
+/datum/chemical_reaction/ice_to_water/on_reaction(var/datum/reagents/holder, var/created_volume)
+	if(istype(holder.my_atom,/obj/item/weapon/reagent_containers/food/drinks/shaker ) || istype(holder.my_atom.loc,/obj/machinery/chem_dispenser) ) //"halt" melting if we're in a shaker, or if we're in a booze/other dispenser to not mess with cocktail making that requires ice.
+		holder.remove_reagent(WATER, created_volume, safety = 1)
+		holder.add_reagent(ICE, created_volume, null, T0C)
+		return
+	var/allowed_consumption = ( holder.chem_temp - required_temp )/50 //.1 units used for every 5 degrees
+	allowed_consumption = ceil(allowed_consumption*10)/10 //clamp to every .1 units.
+	allowed_consumption = min(allowed_consumption,created_volume) //limit to how many units we have to work with.
+	holder.heating(-allowed_consumption*10,T0C) //each .1 unit will reduce the temp of water (or other shc=1 reagent) by 1 degree.
+	holder.remove_reagent(WATER, created_volume-allowed_consumption, safety = 1)
+	holder.add_reagent(ICE, created_volume-allowed_consumption, null, T0C)
 
 ////////////////////////////////////////// COCKTAILS //////////////////////////////////////
 
@@ -3442,7 +3499,7 @@
 	name = "Sex on The Beach"
 	id = SEXONTHEBEACH
 	result = SEXONTHEBEACH
-	required_reagents = list(SCREWDRIVERCOCKTAIL = 1, SCHNAPPS = 1, BERRYJUICE = 1)
+	required_reagents = list(FAKEJUNGLEJUICE = 2, SCHNAPPS = 1)
 	result_amount = 3
 
 /datum/chemical_reaction/americano
@@ -3491,8 +3548,8 @@
 	name = "Mojito"
 	id = MOJITO
 	result = MOJITO
-	required_reagents = list(RUM = 2, SUGARS = 1, SODAWATER = 1, LIMEJUICE = 1)
-	result_amount = 5
+	required_reagents = list(RUM = 2, SUGARS = 1, SODAWATER = 1, LIMEJUICE = 1, MINTESSENCE = 1)
+	result_amount = 6
 
 /datum/chemical_reaction/whiskeytonic
 	name = "Whiskey Tonic"
@@ -4386,6 +4443,70 @@
 	result = PRIAXATE
 	required_reagents = list(GRAVY = 1, TRICORDRAZINE = 1)
 	result_amount = 2
+
+/datum/chemical_reaction/mintconcentration
+	name = "Mint Toxin"
+	id = MINTTOXIN
+	result = MINTTOXIN
+	required_reagents = list(MINTESSENCE = 10)
+	required_temp = T0C + 100 //closest we can get to a vacuum distilation with our ghetto ass systems
+	result_amount = 1
+
+/datum/chemical_reaction/junglejuice //the intended route for JJ, also from poison berries (see below).
+	name = "Jungle Juice"
+	id = JUNGLEJUICE
+	result = JUNGLEJUICE
+	required_reagents = list(BERRYJUICEJUNGLE = 1, SCREWDRIVERCOCKTAIL=1)
+	result_amount = 2
+
+/datum/chemical_reaction/junglejuice_fake //this exists to make JJ more accessible and reduce confusion about why some berries can't make it. that being said, this varient does not have the special effects, for better or worse.
+	name = "Jungle Juice"
+	id = FAKEJUNGLEJUICE
+	result = FAKEJUNGLEJUICE
+	required_reagents = list(BERRYJUICE = 1, SCREWDRIVERCOCKTAIL=1)
+	result_amount = 2
+
+/datum/chemical_reaction/junglejuice_frompoison
+	name = "Jungle Juice"
+	id = "junglejuicepoison"
+	result = JUNGLEJUICE
+	required_reagents = list(POISONBERRYJUICE = 1, SCREWDRIVERCOCKTAIL=1)
+	result_amount = 2
+
+/datum/chemical_reaction/frostbite
+	name = "Frostbite"
+	id = FROSTBITE
+	result = FROSTBITE
+	required_reagents = list(MINTTOXIN = 1, ICE = 1, LIMEJUICE = 1, FROSTOIL = 1)
+	result_amount = 5
+
+/datum/chemical_reaction/mintymule
+	name = "Minty Mule"
+	id = MINTYMULE
+	result = MINTYMULE
+	required_reagents = list(MINTESSENCE = 1, ICED_BEER = 1, LIMEJUICE = 1)
+	result_amount = 3
+
+/datum/chemical_reaction/oldcuban
+	name = "Old Cuban"
+	id = OLDCUBAN
+	result = OLDCUBAN
+	required_reagents = list(RUM = 3, MINTESSENCE = 1, CHAMPAGNE = 2, LIMEJUICE = 1, BITTERS = 1)
+	result_amount = 8
+
+/datum/chemical_reaction/caipirinha
+	name = "Caipirinha"
+	id = CAIPIRINHA
+	result = CAIPIRINHA
+	required_reagents = list(RUM = 4, LIMEJUICE = 1, MINTESSENCE = 2, SUGAR = 1)
+	result_amount = 6
+
+/datum/chemical_reaction/englishgarden
+	name = "English Garden"
+	id = ENGLISHGARDEN
+	result = ENGLISHGARDEN
+	required_reagents = list(MINTESSENCE = 1, GIN = 5, LEMONJUICE = 2, APPLEJUICE = 2)
+	result_amount = 10
 
 #undef ALERT_AMOUNT_ONLY
 #undef ALERT_ALL_REAGENTS

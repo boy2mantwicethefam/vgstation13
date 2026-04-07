@@ -1859,8 +1859,7 @@
 /area/surface/forest/north)
 "afV" = (
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/structure/window/reinforced,
 /obj/structure/window/full/reinforced,
@@ -1875,8 +1874,7 @@
 	})
 "afW" = (
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/structure/window/reinforced{
 	dir = 8
@@ -1890,8 +1888,7 @@
 	})
 "agb" = (
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/structure/window/reinforced,
 /obj/structure/window/full/reinforced,
@@ -1905,8 +1902,7 @@
 	})
 "agc" = (
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/structure/window/reinforced,
 /obj/structure/window/reinforced{
@@ -2052,8 +2048,7 @@
 	})
 "agt" = (
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/structure/window/reinforced{
 	dir = 8
@@ -2070,8 +2065,7 @@
 	})
 "agu" = (
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/structure/window/reinforced,
 /obj/structure/window/reinforced{
@@ -2243,8 +2237,7 @@
 /obj/structure/window/full/reinforced,
 /obj/structure/grille,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /turf/simulated/floor/plating,
 /area/maintenance/disposal{
@@ -3093,8 +3086,7 @@
 /obj/structure/window/full/reinforced,
 /obj/structure/grille,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/machinery/atmospherics/pipe/simple/filtering/visible{
 	dir = 4
@@ -5409,9 +5401,7 @@
 	},
 /area/crew_quarters/sleep)
 "aoy" = (
-/obj/structure/wc/urinal{
-	pixel_y = 32
-	},
+/obj/structure/wc/urinal,
 /turf/simulated/floor{
 	icon_state = "freezerfloor"
 	},
@@ -7301,8 +7291,7 @@
 /obj/structure/window/full/reinforced,
 /obj/structure/grille,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /turf/simulated/floor/plating,
 /area/surface/icecore)
@@ -7796,7 +7785,6 @@
 	},
 /area/crew_quarters/sleep)
 "atM" = (
-/obj/machinery/light,
 /obj/machinery/newscaster/security_unit{
 	dir = 1;
 	pixel_y = -32
@@ -9240,9 +9228,6 @@
 	},
 /area/crew_quarters/hop)
 "awT" = (
-/obj/machinery/light{
-	dir = 1
-	},
 /obj/structure/cable{
 	d1 = 1;
 	d2 = 8;
@@ -9274,6 +9259,9 @@
 	},
 /obj/machinery/atmospherics/pipe/simple/scrubbers/hidden{
 	dir = 10
+	},
+/obj/machinery/light{
+	dir = 1
 	},
 /turf/simulated/floor/carpet{
 	icon_state = "carpetnoconnect"
@@ -11733,6 +11721,7 @@
 	},
 /obj/item/weapon/storage/box/PDAs,
 /obj/item/clothing/suit/storage/wintercoat/hop,
+/obj/machinery/light,
 /turf/simulated/floor/carpet{
 	icon_state = "carpetnoconnect"
 	},
@@ -12409,9 +12398,6 @@
 /turf/simulated/floor,
 /area/engineering/supermatter_room)
 "aCQ" = (
-/obj/machinery/power/terminal{
-	dir = 1
-	},
 /obj/structure/cable{
 	d2 = 8;
 	icon_state = "0-8"
@@ -16011,7 +15997,6 @@
 /turf/simulated/floor/plating,
 /area/engineering/burn_chamber)
 "aKm" = (
-/obj/machinery/atmospherics/pipe/simple/heat_exchanging/junction,
 /obj/structure/grille,
 /obj/structure/window/reinforced,
 /obj/structure/window/reinforced{
@@ -17337,8 +17322,7 @@
 /obj/structure/grille,
 /obj/structure/window/full/reinforced,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 2
+	dir = 1
 	},
 /turf/simulated/floor/plating,
 /area/maintenance/port{
@@ -17894,7 +17878,7 @@
 /area/supply/qm)
 "aOT" = (
 /obj/machinery/conveyor_switch/oneway{
-	id_tag = "QMLoad"
+	id_tag = "QMLoad3"
 	},
 /turf/simulated/floor,
 /area/supply/storage)
@@ -18282,6 +18266,11 @@
 	icon_state = "warning";
 	tag = "icon-warning (NORTH)"
 	},
+/obj/machinery/requests_console{
+	department = "Medbay";
+	phone_name = "Medbay Lobby";
+	pixel_x = 30
+	},
 /turf/simulated/floor{
 	dir = 4;
 	icon_state = "whitegreen"
@@ -18321,6 +18310,9 @@
 	supply_display = 1
 	},
 /obj/machinery/light/small,
+/obj/machinery/conveyor_switch/oneway{
+	id_tag = "QMLoad"
+	},
 /turf/simulated/floor{
 	icon_state = "warning"
 	},
@@ -22342,8 +22334,7 @@
 "aZk" = (
 /obj/structure/window/reinforced,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/structure/window/full/reinforced,
 /obj/structure/grille,
@@ -22355,8 +22346,7 @@
 "aZm" = (
 /obj/structure/window/reinforced,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/structure/window/full/reinforced,
 /obj/structure/grille,
@@ -22546,8 +22536,7 @@
 /area/medical/chemistry)
 "aZT" = (
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/structure/window/reinforced{
 	dir = 4
@@ -23899,6 +23888,13 @@
 	c_tag = "Medbay South";
 	dir = 1
 	},
+/obj/machinery/requests_console{
+	department = "Medbay";
+	departmentType = 1;
+	name = "Medbay RC";
+	pixel_y = -30;
+	phone_name = "Medbay Storage"
+	},
 /turf/simulated/floor{
 	icon_state = "whiteblue"
 	},
@@ -24204,8 +24200,7 @@
 /obj/structure/grille,
 /obj/structure/window/full/reinforced,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 2
+	dir = 1
 	},
 /turf/simulated/floor/plating,
 /area/station/garage)
@@ -24218,8 +24213,7 @@
 /area/station/garage)
 "bdT" = (
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/effect/decal/warning_stripes{
 	dir = 8;
@@ -28848,6 +28842,11 @@
 /turf/unsimulated/floor/snow,
 /area/surface/forest/south)
 "boA" = (
+/obj/machinery/requests_console{
+	department = "Genetics";
+	name = "Genetics Requests Console";
+	pixel_x = -30
+	},
 /turf/simulated/floor{
 	dir = 8;
 	icon_state = "whitepurple"
@@ -30183,8 +30182,7 @@
 "bsH" = (
 /obj/structure/window/reinforced,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/structure/window/full/reinforced,
 /obj/structure/grille,
@@ -30360,7 +30358,7 @@
 "btf" = (
 /obj/machinery/conveyor{
 	dir = 6;
-	id_tag = "QMLoad"
+	id_tag = "QMLoad3"
 	},
 /turf/simulated/floor,
 /area/supply/storage)
@@ -35816,11 +35814,22 @@
 	name = "Security Access";
 	normaldoorcontrol = 1;
 	pixel_y = 25;
-	range = 3;
-	req_access_txt = "63"
+	range = 4;
+	req_access_txt = "63";
+	pixel_x = -7
 	},
 /obj/structure/bed/chair{
 	dir = 4
+	},
+/obj/machinery/door_control{
+	desc = "A remote control switch for the brig foyer.";
+	id_tag = "BrigFoyerFront";
+	name = "Security Access";
+	normaldoorcontrol = 1;
+	pixel_y = 25;
+	range = 4;
+	req_access_txt = "63";
+	pixel_x = 7
 	},
 /turf/simulated/floor{
 	dir = 5;
@@ -41279,6 +41288,7 @@
 /area/science/xenobiology)
 "bMn" = (
 /obj/structure/bookcase,
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "bMo" = (
@@ -44420,6 +44430,7 @@
 /obj/structure/disposalpipe/segment{
 	dir = 4
 	},
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/carpet,
 /area/library)
 "bRL" = (
@@ -44748,8 +44759,7 @@
 	dir = 8
 	},
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 2
+	dir = 1
 	},
 /obj/structure/window/reinforced{
 	dir = 4
@@ -45858,8 +45868,7 @@
 "bUA" = (
 /obj/structure/closet/coffin,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /turf/simulated/floor/wood,
 /area/chapel/office)
@@ -45870,8 +45879,7 @@
 "bUC" = (
 /obj/structure/closet/coffin,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/structure/window/reinforced{
 	dir = 4
@@ -47629,8 +47637,7 @@
 	icon_state = "0-2"
 	},
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/machinery/door/poddoor{
 	density = 0;
@@ -48005,9 +48012,7 @@
 	icon_state = "1-8";
 	tag = ""
 	},
-/turf/simulated/floor{
-	icon_state = "damaged3"
-	},
+/turf/simulated/floor/damaged,
 /area/maintenance/auxsolarstarboard{
 	name = "Southeast Solar Control"
 	})
@@ -48345,9 +48350,7 @@
 	name = "Southeast Solar Control"
 	})
 "bYX" = (
-/turf/simulated/floor{
-	icon_state = "damaged2"
-	},
+/turf/simulated/floor/damaged,
 /area/maintenance/auxsolarstarboard{
 	name = "Southeast Solar Control"
 	})
@@ -49880,8 +49883,7 @@
 	dir = 8
 	},
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 2
+	dir = 1
 	},
 /obj/structure/window/reinforced{
 	dir = 4
@@ -49948,8 +49950,7 @@
 	one_way = 1
 	},
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 2
+	dir = 1
 	},
 /obj/structure/window/reinforced{
 	dir = 8
@@ -50000,8 +50001,7 @@
 	icon_state = "0-2"
 	},
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 2
+	dir = 1
 	},
 /obj/structure/window/reinforced{
 	dir = 4
@@ -50205,8 +50205,7 @@
 	icon_state = "0-2"
 	},
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 2
+	dir = 1
 	},
 /obj/structure/window/reinforced{
 	dir = 8
@@ -50279,8 +50278,7 @@
 	},
 /obj/structure/window/reinforced,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 2
+	dir = 1
 	},
 /obj/structure/window/full/reinforced,
 /turf/simulated/floor/plating,
@@ -50309,8 +50307,7 @@
 /obj/structure/cable,
 /obj/structure/window/reinforced,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 2
+	dir = 1
 	},
 /obj/structure/window/full/reinforced,
 /turf/simulated/floor/plating,
@@ -50337,8 +50334,7 @@
 	},
 /obj/structure/window/reinforced,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 2
+	dir = 1
 	},
 /obj/structure/window/full/reinforced,
 /turf/simulated/floor/plating,
@@ -50361,8 +50357,7 @@
 	},
 /obj/structure/window/reinforced,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 2
+	dir = 1
 	},
 /obj/structure/window/full/reinforced,
 /obj/structure/cable{
@@ -50389,8 +50384,7 @@
 	},
 /obj/structure/window/reinforced,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 2
+	dir = 1
 	},
 /obj/structure/window/full/reinforced,
 /obj/structure/cable{
@@ -51549,14 +51543,12 @@
 /area/shuttle/administration/centcom)
 "ceF" = (
 /obj/structure/bed,
-/turf/unsimulated/floor{
-	icon_state = "floorscorched1"
-	},
+/turf/unsimulated/floor/scorched,
 /area/prison/solitary)
 "ceG" = (
 /obj/effect/decal/cleanable/cobweb2,
-/turf/unsimulated/floor{
-	icon_state = "platingdmg1"
+/turf/unsimulated/floor/broken{
+	icon_state = "plating"
 	},
 /area/prison/solitary)
 "ceH" = (
@@ -51566,8 +51558,8 @@
 	},
 /area/prison/solitary)
 "ceI" = (
-/turf/unsimulated/floor{
-	icon_state = "panelscorched"
+/turf/unsimulated/floor/scorched{
+	icon_state = "plating"
 	},
 /area/prison/solitary)
 "ceJ" = (
@@ -51575,8 +51567,8 @@
 /turf/unsimulated/wall,
 /area/prison/solitary)
 "ceK" = (
-/turf/unsimulated/floor{
-	icon_state = "platingdmg3"
+/turf/unsimulated/floor/broken{
+	icon_state = "plating"
 	},
 /area/prison/solitary)
 "ceL" = (
@@ -51588,12 +51580,6 @@
 /obj/effect/decal/cleanable/cobweb2,
 /turf/unsimulated/floor{
 	name = "plating"
-	},
-/area/prison/solitary)
-"ceN" = (
-/obj/structure/bed,
-/turf/unsimulated/floor{
-	icon_state = "floorscorched2"
 	},
 /area/prison/solitary)
 "ceO" = (
@@ -51822,19 +51808,14 @@
 /area/centcom/living)
 "cfs" = (
 /obj/structure/bed,
-/turf/unsimulated/floor{
-	icon_state = "platingdmg3"
-	},
-/area/prison/solitary)
-"cft" = (
-/turf/unsimulated/floor{
-	icon_state = "platingdmg1"
+/turf/unsimulated/floor/broken{
+	icon_state = "plating"
 	},
 /area/prison/solitary)
 "cfu" = (
 /obj/structure/bed,
-/turf/unsimulated/floor{
-	icon_state = "panelscorched"
+/turf/unsimulated/floor/scorched{
+	icon_state = "plating"
 	},
 /area/prison/solitary)
 "cfv" = (
@@ -51865,15 +51846,8 @@
 	name = "plating"
 	},
 /area/centcom/living)
-"cfz" = (
-/turf/unsimulated/floor{
-	icon_state = "floorscorched1"
-	},
-/area/prison/solitary)
 "cfB" = (
-/turf/unsimulated/floor{
-	icon_state = "floorscorched2"
-	},
+/turf/unsimulated/floor/scorched,
 /area/prison/solitary)
 "cfC" = (
 /obj/machinery/dna_scannernew,
@@ -61292,17 +61266,13 @@
 	},
 /area/syndicate_mothership)
 "cCu" = (
-/obj/structure/wc/urinal{
-	pixel_y = 32
-	},
+/obj/structure/wc/urinal,
 /turf/unsimulated/floor{
 	icon_state = "freezerfloor"
 	},
 /area/syndicate_mothership)
 "cCv" = (
-/obj/structure/wc/urinal{
-	pixel_y = 32
-	},
+/obj/structure/wc/urinal,
 /obj/effect/decal/cleanable/vomit,
 /turf/unsimulated/floor{
 	icon_state = "freezerfloor"
@@ -61451,10 +61421,6 @@
 	icon_state = "freezerfloor"
 	},
 /area/syndicate_mothership)
-"cCY" = (
-/obj/effect/landmark/dungeon_area,
-/turf/space,
-/area)
 "cDd" = (
 /obj/structure/sign/securearea{
 	desc = "A warning sign which reads 'FOURTH WALL'.";
@@ -63720,7 +63686,7 @@
 	icon_state = "warning";
 	tag = "icon-warning (NORTH)"
 	},
-/obj/machinery/computer/climate,
+/obj/machinery/computer/climate/long_range,
 /turf/simulated/floor,
 /area/hallway/secondary/entry)
 "dpV" = (
@@ -64185,9 +64151,7 @@
 	dir = 1
 	},
 /obj/machinery/recharge_station,
-/turf/simulated/floor/plating/airless{
-	icon_state = "platingdmg3"
-	},
+/turf/simulated/floor/plating/damaged/airless/broken,
 /area/derelict/secret)
 "drk" = (
 /obj/structure/closet/secure_closet/miner,
@@ -64197,9 +64161,7 @@
 /area/derelict/secret)
 "drl" = (
 /obj/structure/ore_box,
-/turf/simulated/floor/plating/airless{
-	icon_state = "panelscorched"
-	},
+/turf/simulated/floor/plating/damaged/airless/burnt,
 /area/derelict/secret)
 "drm" = (
 /obj/machinery/door/airlock{
@@ -64244,9 +64206,7 @@
 /area/derelict/secret)
 "drs" = (
 /obj/structure/closet/secure_closet/miner,
-/turf/simulated/floor/plating/airless{
-	icon_state = "panelscorched"
-	},
+/turf/simulated/floor/plating/damaged/airless/burnt,
 /area/derelict/secret)
 "drt" = (
 /obj/structure/bed/chair{
@@ -64389,9 +64349,7 @@
 /area/derelict/secret)
 "drK" = (
 /obj/structure/ore_box,
-/turf/simulated/floor/plating/airless{
-	icon_state = "platingdmg1"
-	},
+/turf/simulated/floor/plating/damaged/airless/broken,
 /area/derelict/secret)
 "drL" = (
 /obj/structure/grille,
@@ -65073,7 +65031,7 @@
 	icon_state = "warning";
 	tag = "icon-warning"
 	},
-/obj/machinery/computer/climate,
+/obj/machinery/computer/climate/long_range,
 /turf/simulated/floor,
 /area/hallway/secondary/entry)
 "dtv" = (
@@ -65148,9 +65106,7 @@
 	name = "Mining Station Maintenance";
 	req_access_txt = "48"
 	},
-/turf/simulated/floor/plating{
-	icon_state = "platingdmg1"
-	},
+/turf/simulated/floor/plating/damaged/broken,
 /area/derelict/secret)
 "dtC" = (
 /obj/machinery/door/airlock/glass_medical{
@@ -65382,9 +65338,7 @@
 	},
 /area/derelict/secret)
 "dtZ" = (
-/turf/simulated/floor/plating{
-	icon_state = "panelscorched"
-	},
+/turf/simulated/floor/plating/damaged/burnt,
 /area/derelict/secret)
 "dua" = (
 /obj/structure/cable{
@@ -65393,9 +65347,7 @@
 	icon_state = "4-8"
 	},
 /obj/item/weapon/storage/box/lights/mixed,
-/turf/simulated/floor/plating{
-	icon_state = "platingdmg3"
-	},
+/turf/simulated/floor/plating/damaged/broken,
 /area/derelict/secret)
 "dub" = (
 /obj/structure/cable{
@@ -65413,9 +65365,7 @@
 	d2 = 4;
 	icon_state = "0-4"
 	},
-/turf/simulated/floor/plating{
-	icon_state = "panelscorched"
-	},
+/turf/simulated/floor/plating/damaged/burnt,
 /area/derelict/secret)
 "dud" = (
 /obj/machinery/light/small{
@@ -65673,19 +65623,10 @@
 /area/derelict/secret)
 "duz" = (
 /obj/effect/decal/cleanable/dirt,
-/turf/simulated/floor/plating{
-	icon_state = "platingdmg3"
-	},
-/area/derelict/secret)
-"duA" = (
-/turf/simulated/floor/plating{
-	icon_state = "platingdmg3"
-	},
+/turf/simulated/floor/plating/damaged/broken,
 /area/derelict/secret)
 "duB" = (
-/turf/simulated/floor/plating{
-	icon_state = "platingdmg1"
-	},
+/turf/simulated/floor/plating/damaged/broken,
 /area/derelict/secret)
 "duC" = (
 /obj/machinery/power/terminal{
@@ -65934,9 +65875,7 @@
 /area/derelict/secret)
 "dva" = (
 /obj/item/weapon/gun/energy/plasma/MP40k,
-/turf/simulated/floor/plating{
-	icon_state = "platingdmg1"
-	},
+/turf/simulated/floor/plating/damaged/broken,
 /area/derelict/secret)
 "dvb" = (
 /obj/structure/cable{
@@ -65946,9 +65885,7 @@
 /obj/machinery/power/port_gen/pacman{
 	anchored = 1
 	},
-/turf/simulated/floor/plating{
-	icon_state = "panelscorched"
-	},
+/turf/simulated/floor/plating/damaged/burnt,
 /area/derelict/secret)
 "dvc" = (
 /obj/machinery/portable_atmospherics/canister/oxygen,
@@ -65963,9 +65900,7 @@
 /obj/machinery/power/port_gen/pacman{
 	anchored = 1
 	},
-/turf/simulated/floor/plating{
-	icon_state = "platingdmg3"
-	},
+/turf/simulated/floor/plating/damaged/broken,
 /area/derelict/secret)
 "dve" = (
 /obj/machinery/door/airlock/external{
@@ -66630,7 +66565,7 @@
 	name = "Outpost Mining Dock"
 	})
 "dwy" = (
-/obj/machinery/computer/climate,
+/obj/machinery/computer/climate/long_range,
 /turf/simulated/floor,
 /area/mine/eva{
 	name = "Outpost Mining Dock"
@@ -70491,9 +70426,7 @@
 "dDx" = (
 /obj/machinery/botany/extractor,
 /obj/structure/window/reinforced{
-	dir = 4;
-	pixel_x = 2;
-	tag = ""
+	dir = 4
 	},
 /turf/simulated/floor{
 	dir = 4;
@@ -70539,9 +70472,7 @@
 /obj/structure/table,
 /obj/item/weapon/storage/lockbox/diskettebox/large/open/botanydisk,
 /obj/structure/window/reinforced{
-	dir = 4;
-	pixel_x = 2;
-	tag = ""
+	dir = 4
 	},
 /obj/structure/window/reinforced,
 /turf/simulated/floor{
@@ -75539,8 +75470,7 @@
 	},
 /obj/structure/window/reinforced,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 2
+	dir = 1
 	},
 /obj/structure/window/full/reinforced,
 /turf/simulated/floor/plating/airless,
@@ -75707,9 +75637,7 @@
 	dir = 1
 	},
 /obj/structure/window/reinforced{
-	dir = 4;
-	pixel_x = 2;
-	tag = ""
+	dir = 4
 	},
 /obj/machinery/door/poddoor/shutters/preopen{
 	dir = 2;
@@ -75731,6 +75659,11 @@
 	dir = 2;
 	id_tag = "TSdisplay";
 	name = "Tradeship Display Shutters"
+	},
+/obj/item/device/deskbell/signaler/trader{
+	pixel_y = 5;
+	pixel_x = 10;
+	name = "Trade Ship Counter Bell"
 	},
 /turf/simulated/floor{
 	icon_state = "showroomfloor"
@@ -76438,8 +76371,7 @@
 "eBd" = (
 /obj/structure/window/reinforced,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/structure/window/reinforced{
 	dir = 4
@@ -77458,9 +77390,7 @@
 /obj/structure/window/reinforced{
 	dir = 1
 	},
-/obj/structure/window/reinforced{
-	one_way = 1
-	},
+/obj/structure/window/reinforced,
 /turf/simulated/floor/plating,
 /area/supply/storage)
 "gef" = (
@@ -78642,7 +78572,6 @@
 /turf/simulated/floor/shuttle,
 /area/centcom/evac)
 "hRr" = (
-/obj/machinery/atmospherics/pipe/simple/heat_exchanging/junction,
 /obj/structure/grille,
 /obj/structure/window/reinforced,
 /obj/structure/window/reinforced{
@@ -79176,9 +79105,7 @@
 	external_pressure_bound = 101;
 	on = 1
 	},
-/turf/simulated/floor{
-	icon_state = "damaged3"
-	},
+/turf/simulated/floor/damaged,
 /area/engine/aux_control{
 	name = "Engineering Medical"
 	})
@@ -80460,6 +80387,7 @@
 /area/science/lab)
 "kjg" = (
 /obj/structure/table/woodentable,
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/carpet/shag,
 /area/library)
 "kjy" = (
@@ -81173,8 +81101,7 @@
 "ljU" = (
 /obj/structure/window/reinforced,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/structure/window/full/reinforced,
 /obj/structure/grille,
@@ -83252,8 +83179,7 @@
 "nSP" = (
 /obj/structure/window/reinforced,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/structure/window/full/reinforced,
 /obj/structure/grille,
@@ -83955,7 +83881,7 @@
 "oQc" = (
 /obj/machinery/conveyor{
 	dir = 4;
-	id_tag = "QMLoad"
+	id_tag = "QMLoad3"
 	},
 /turf/simulated/floor,
 /area/supply/storage)
@@ -85610,9 +85536,7 @@
 "rqN" = (
 /obj/structure/table/reinforced,
 /obj/structure/window/reinforced{
-	dir = 4;
-	pixel_x = 2;
-	tag = ""
+	dir = 4
 	},
 /obj/structure/window/reinforced,
 /turf/simulated/floor{
@@ -86488,6 +86412,10 @@
 	d2 = 8;
 	icon_state = "1-8"
 	},
+/obj/machinery/conveyor_switch/oneway{
+	convdir = -1;
+	id_tag = "QMLoad2"
+	},
 /turf/simulated/floor{
 	icon_state = "warning"
 	},
@@ -86721,9 +86649,7 @@
 	d2 = 8;
 	icon_state = "2-8"
 	},
-/turf/simulated/floor{
-	icon_state = "damaged2"
-	},
+/turf/simulated/floor/damaged,
 /area/engine/aux_control{
 	name = "Engineering Medical"
 	})
@@ -87732,6 +87658,11 @@
 /area/engineering/atmos)
 "ufV" = (
 /obj/structure/curtain/medical,
+/obj/machinery/requests_console{
+	department = "Chemistry";
+	departmentType = 2;
+	pixel_y = 30
+	},
 /turf/simulated/floor{
 	dir = 1;
 	icon_state = "whiteyellow"
@@ -88918,6 +88849,7 @@
 /area/medical/medbay)
 "wmN" = (
 /obj/structure/table/woodentable,
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/carpet,
 /area/library)
 "wnW" = (
@@ -146688,9 +146620,9 @@ aUQ
 aHW
 aJA
 aLh
-bgW
-pzJ
 mnD
+pzJ
+bgW
 srz
 bsI
 ila
@@ -148198,9 +148130,9 @@ aOW
 bqr
 aJF
 aMC
-aOW
-aOW
 aOT
+aOW
+aOW
 aPQ
 aQy
 ila
@@ -199633,7 +199565,7 @@ ceG
 cfd
 cBS
 ceO
-cfz
+cfB
 cBS
 ccH
 ccH
@@ -199921,7 +199853,7 @@ ccH
 ccH
 ccH
 ccH
-cCY
+ccH
 ccH
 ccH
 ccH
@@ -200538,7 +200470,7 @@ cBS
 ceI
 ceL
 cBS
-cft
+ceK
 ceL
 cBS
 ccH
@@ -203857,7 +203789,7 @@ ccH
 ccH
 ccH
 cBS
-ceN
+ceF
 cfc
 cBS
 cfv
@@ -204163,7 +204095,7 @@ ceO
 ceL
 cBS
 ceL
-cft
+ceK
 cBS
 ccH
 ccH
@@ -620215,7 +620147,7 @@ dqx
 dte
 dpy
 dtZ
-duA
+duB
 dva
 dpy
 doU

@@ -11,12 +11,9 @@
 	update_icon()
 
 /obj/structure/flora/Destroy()
-	if(istype(loc,/turf/unsimulated/floor/jungle/grass))
-		var/turf/unsimulated/floor/jungle/grass/G=loc
+	if(istype(loc,/turf/unsimulated/floor/planetary/grass/jungle))
+		var/turf/unsimulated/floor/planetary/grass/jungle/G=loc
 		G.turf_speed_multiplier=1.0
-		if(SSFoliageRegrow)
-			turfs_to_regrow +=G
-			G.regrowticks=world.time
 	..()
 
 /obj/structure/flora/update_icon()
@@ -705,6 +702,8 @@
 	desc = "I eated the purple berries."
 	icon = 'icons/obj/hydroponics/berry.dmi'
 	icon_state="stage-6"
+	anchored=TRUE
+	shovelaway=TRUE
 	var/hasberries=FALSE
 	var/tickssincelastgrowth=0
 

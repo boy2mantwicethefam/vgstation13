@@ -31793,6 +31793,7 @@
 /obj/structure/bookcase{
 	name = "bookcase (Tactics)"
 	},
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "bfB" = (
@@ -31814,6 +31815,7 @@
 /obj/structure/bookcase{
 	name = "bookcase (Non-Fiction)"
 	},
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "bfD" = (
@@ -31826,12 +31828,14 @@
 /obj/structure/bookcase{
 	name = "bookcase (Fiction)"
 	},
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "bfF" = (
 /obj/structure/bookcase{
 	name = "bookcase (Adult)"
 	},
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "bfG" = (
@@ -32464,6 +32468,7 @@
 /obj/item/weapon/book/manual/security_antag_guide,
 /obj/item/weapon/book/manual/hydroponics_pod_people,
 /obj/item/weapon/book/manual/security_space_law,
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "bgW" = (
@@ -33245,6 +33250,7 @@
 /obj/structure/bookcase{
 	name = "bookcase (Religious)"
 	},
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "biw" = (
@@ -33259,6 +33265,7 @@
 "bix" = (
 /obj/structure/table/woodentable,
 /obj/structure/disposalpipe/segment,
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "biy" = (
@@ -33280,6 +33287,7 @@
 "biA" = (
 /obj/machinery/atmospherics/pipe/simple/supply/hidden/layered,
 /obj/structure/table/woodentable,
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "biB" = (
@@ -34199,6 +34207,7 @@
 	dir = 8;
 	icon_state = "pipe-c"
 	},
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "bjO" = (
@@ -43187,6 +43196,11 @@
 	name = "Trader Dock Shutters"
 	},
 /obj/structure/plasticflaps/mining,
+/obj/item/device/deskbell/signaler/trader{
+	pixel_x = 6;
+	pixel_y = 8;
+	name = "Trade Counter Bell"
+	},
 /turf/simulated/floor/vox{
 	name = "floor"
 	},
@@ -53130,9 +53144,7 @@
 /turf/simulated/floor/plating,
 /area/maintenance/central/capmaint)
 "bRR" = (
-/obj/structure/wc/urinal{
-	pixel_y = 32
-	},
+/obj/structure/wc/urinal,
 /obj/effect/decal/cleanable/liquid_fuel,
 /obj/abstract/map/spawner/floorpill,
 /turf/simulated/floor/plating,
@@ -65173,9 +65185,7 @@
 /turf/simulated/wall,
 /area/engineering/lockers)
 "cnX" = (
-/obj/structure/wc/urinal{
-	pixel_y = 32
-	},
+/obj/structure/wc/urinal,
 /obj/machinery/atmospherics/pipe/simple/supply/hidden/layered{
 	dir = 6
 	},
@@ -73221,10 +73231,6 @@
 /obj/docking_port/destination/vox/southeast_station,
 /turf/space,
 /area)
-"cGk" = (
-/obj/effect/landmark/dungeon_area,
-/turf/space,
-/area)
 "cGl" = (
 /turf/simulated/wall/shuttle/unsmoothed{
 	dir = 1;
@@ -73939,18 +73945,14 @@
 	},
 /area/syndicate_mothership)
 "cHU" = (
-/obj/structure/wc/urinal{
-	pixel_y = 32
-	},
+/obj/structure/wc/urinal,
 /obj/effect/decal/cleanable/vomit,
 /turf/unsimulated/floor{
 	icon_state = "freezerfloor"
 	},
 /area/syndicate_mothership)
 "cHV" = (
-/obj/structure/wc/urinal{
-	pixel_y = 32
-	},
+/obj/structure/wc/urinal,
 /turf/unsimulated/floor{
 	icon_state = "freezerfloor"
 	},
@@ -76837,14 +76839,8 @@
 /area/centcom/suppy)
 "cPM" = (
 /obj/effect/decal/cleanable/cobweb2,
-/turf/unsimulated/floor{
-	icon_state = "platingdmg1"
-	},
-/area/prison/solitary)
-"cPN" = (
-/obj/structure/bed,
-/turf/unsimulated/floor{
-	icon_state = "floorscorched1"
+/turf/unsimulated/floor/broken{
+	icon_state = "plating"
 	},
 /area/prison/solitary)
 "cPO" = (
@@ -76858,18 +76854,13 @@
 /turf/unsimulated/wall,
 /area/prison/solitary)
 "cPQ" = (
-/turf/unsimulated/floor{
-	icon_state = "panelscorched"
+/turf/unsimulated/floor/scorched{
+	icon_state = "plating"
 	},
 /area/prison/solitary)
 "cPR" = (
 /turf/unsimulated/floor{
 	name = "plating"
-	},
-/area/prison/solitary)
-"cPS" = (
-/turf/unsimulated/floor{
-	icon_state = "platingdmg3"
 	},
 /area/prison/solitary)
 "cPT" = (
@@ -76886,9 +76877,7 @@
 /area/prison/solitary)
 "cPV" = (
 /obj/structure/bed,
-/turf/unsimulated/floor{
-	icon_state = "floorscorched2"
-	},
+/turf/unsimulated/floor/scorched,
 /area/prison/solitary)
 "cPW" = (
 /obj/item/weapon/storage/fancy/cigarettes,
@@ -77232,19 +77221,19 @@
 /area/centcom/suppy)
 "cQT" = (
 /obj/structure/bed,
-/turf/unsimulated/floor{
-	icon_state = "platingdmg3"
+/turf/unsimulated/floor/broken{
+	icon_state = "plating"
 	},
 /area/prison/solitary)
 "cQU" = (
-/turf/unsimulated/floor{
-	icon_state = "platingdmg1"
+/turf/unsimulated/floor/broken{
+	icon_state = "plating"
 	},
 /area/prison/solitary)
 "cQV" = (
 /obj/structure/bed,
-/turf/unsimulated/floor{
-	icon_state = "panelscorched"
+/turf/unsimulated/floor/scorched{
+	icon_state = "plating"
 	},
 /area/prison/solitary)
 "cQW" = (
@@ -77290,15 +77279,8 @@
 	icon_state = "dark neutral stripe"
 	},
 /area/centcom/suppy)
-"cRc" = (
-/turf/unsimulated/floor{
-	icon_state = "floorscorched1"
-	},
-/area/prison/solitary)
 "cRd" = (
-/turf/unsimulated/floor{
-	icon_state = "floorscorched2"
-	},
+/turf/unsimulated/floor/scorched,
 /area/prison/solitary)
 "cRe" = (
 /obj/machinery/dna_scannernew,
@@ -99818,6 +99800,15 @@
 	icon_state = "bluecorner"
 	},
 /area/hallway/primary/central/fore)
+"fLC" = (
+/obj/structure/table/woodentable,
+/obj/item/device/flashlight/lamp/green{
+	pixel_x = 1;
+	pixel_y = 5
+	},
+/obj/abstract/map/spawner/library,
+/turf/simulated/floor/wood,
+/area/library)
 "fLJ" = (
 /obj/machinery/atmospherics/pipe/simple/scrubbers/hidden/layered{
 	dir = 4
@@ -103672,6 +103663,7 @@
 	dir = 8;
 	pixel_x = -29
 	},
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "tbW" = (
@@ -104985,6 +104977,7 @@
 /obj/item/weapon/book/manual/chemistry_manual,
 /obj/item/weapon/book/manual/virology_guide,
 /obj/item/weapon/book/manual/engineering_guide,
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "wWc" = (
@@ -269736,8 +269729,8 @@ bit
 bjJ
 blo
 bmD
-bgU
-bgU
+fLC
+fLC
 bmD
 bsd
 bsa
@@ -356576,7 +356569,7 @@ aaa
 aaa
 aaa
 aaa
-cGk
+aaa
 aaa
 aaa
 aaa
@@ -392843,7 +392836,7 @@ aaa
 aaa
 aaa
 cPC
-cPN
+cPV
 cQm
 cPC
 cQT
@@ -393349,7 +393342,7 @@ cPM
 cQl
 cPC
 cPU
-cRc
+cRd
 cPC
 aaa
 aaa
@@ -396357,11 +396350,11 @@ aaa
 aaa
 aaa
 cPC
-cPS
+cQU
 cQl
 cPC
 cQl
-cPS
+cQU
 cPC
 aaa
 cRv
@@ -397866,7 +397859,7 @@ cPC
 cPR
 cPU
 cPC
-cPS
+cQU
 cPR
 cPC
 aaa
@@ -399372,7 +399365,7 @@ cPC
 cPT
 cPQ
 cPC
-cPS
+cQU
 cPR
 cPC
 aaa
@@ -402382,7 +402375,7 @@ aaa
 aaa
 cPC
 cPR
-cPS
+cQU
 cPC
 cPU
 cRd

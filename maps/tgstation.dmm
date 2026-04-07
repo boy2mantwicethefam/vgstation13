@@ -15758,9 +15758,7 @@
 /turf/simulated/floor/plating,
 /area/maintenance/fpmaint)
 "aAe" = (
-/obj/structure/wc/urinal{
-	pixel_y = 32
-	},
+/obj/structure/wc/urinal,
 /obj/effect/decal/cleanable/generic,
 /turf/simulated/floor/plating,
 /area/maintenance/fpmaint)
@@ -17014,8 +17012,7 @@
 	dir = 8
 	},
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /turf/simulated/floor/plating,
 /area/maintenance/fpmaint)
@@ -22733,9 +22730,7 @@
 	},
 /area/crew_quarters/sleep)
 "aPH" = (
-/obj/structure/wc/urinal{
-	pixel_y = 32
-	},
+/obj/structure/wc/urinal,
 /turf/simulated/floor{
 	icon_state = "freezerfloor"
 	},
@@ -22757,9 +22752,7 @@
 	},
 /area/crew_quarters/toilet)
 "aPJ" = (
-/obj/structure/wc/urinal{
-	pixel_y = 32
-	},
+/obj/structure/wc/urinal,
 /obj/machinery/camera{
 	dir = 8;
 	name = "Dormitory Toilets North"
@@ -26561,6 +26554,7 @@
 /obj/structure/table/woodentable,
 /obj/structure/disposalpipe/segment,
 /obj/machinery/atmospherics/pipe/simple/supply/hidden,
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "aXu" = (
@@ -29799,6 +29793,7 @@
 /obj/structure/bookcase{
 	name = "bookcase (Reference)"
 	},
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "bel" = (
@@ -31321,7 +31316,6 @@
 /area/bridge)
 "bhf" = (
 /obj/machinery/computer/security/engineering,
-/obj/machinery/computer/gas_extraction,
 /turf/simulated/floor{
 	icon_state = "dark"
 	},
@@ -31572,6 +31566,7 @@
 /obj/structure/bookcase{
 	name = "bookcase (Fiction)"
 	},
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "bhJ" = (
@@ -48701,8 +48696,7 @@
 	dir = 4
 	},
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /turf/simulated/floor/plating,
 /area/science/lab)
@@ -49577,8 +49571,7 @@
 	dir = 8
 	},
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /turf/simulated/floor/plating,
 /area/medical/genetics)
@@ -52474,8 +52467,7 @@
 	dir = 4
 	},
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /turf/simulated/floor/plating,
 /area/medical/genetics)
@@ -55931,8 +55923,7 @@
 "cbc" = (
 /obj/structure/grille,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/structure/window/reinforced,
 /turf/simulated/floor/plating,
@@ -55940,8 +55931,7 @@
 "cbd" = (
 /obj/structure/grille,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/structure/window/reinforced{
 	dir = 4
@@ -56088,9 +56078,7 @@
 /area/maintenance/aft)
 "cbv" = (
 /obj/structure/bed/chair,
-/turf/simulated/floor/plating{
-	icon_state = "platingdmg2"
-	},
+/turf/simulated/floor/plating/damaged/broken,
 /area/maintenance/aft)
 "cbw" = (
 /obj/machinery/light/small{
@@ -59057,10 +59045,7 @@
 /area/maintenance/aft)
 "cgY" = (
 /obj/item/stack/rods,
-/turf/simulated/floor/plating{
-	icon_state = "platingdmg1";
-	tag = "icon-platingdmg1"
-	},
+/turf/simulated/floor/plating/damaged/broken,
 /area/maintenance/aft)
 "cgZ" = (
 /obj/effect/decal/cleanable/ash,
@@ -59547,8 +59532,7 @@
 	dir = 4
 	},
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/machinery/door/poddoor{
 	density = 0;
@@ -63705,14 +63689,6 @@
 	icon_state = "whitegreen"
 	},
 /area/science/hallway)
-"cpI" = (
-/obj/structure/grille,
-/obj/structure/window/reinforced{
-	dir = 1
-	},
-/obj/structure/window/reinforced,
-/turf/simulated/floor/plating,
-/area/maintenance/asmaint2)
 "cpJ" = (
 /obj/structure/grille,
 /obj/structure/window/reinforced{
@@ -63720,17 +63696,6 @@
 	},
 /obj/structure/window/reinforced{
 	dir = 1
-	},
-/obj/structure/window/reinforced,
-/turf/simulated/floor/plating,
-/area/maintenance/asmaint2)
-"cpK" = (
-/obj/structure/grille,
-/obj/structure/window/reinforced{
-	dir = 1
-	},
-/obj/structure/window/reinforced{
-	dir = 4
 	},
 /obj/structure/window/reinforced,
 /turf/simulated/floor/plating,
@@ -64285,10 +64250,7 @@
 /turf/simulated/wall/r_wall,
 /area/tcomms/storage)
 "cqR" = (
-/turf/simulated/floor/plating{
-	icon_state = "platingdmg3";
-	tag = "icon-platingdmg3"
-	},
+/turf/simulated/floor/plating/damaged/broken,
 /area/maintenance/aft)
 "cqS" = (
 /obj/structure/grille,
@@ -66171,8 +66133,7 @@
 	dir = 4
 	},
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/structure/window/reinforced,
 /turf/simulated/floor/plating,
@@ -75695,8 +75656,7 @@
 	},
 /obj/structure/window/reinforced,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/structure/window/full/reinforced,
 /turf/simulated/floor/plating,
@@ -75722,8 +75682,7 @@
 	},
 /obj/structure/window/reinforced,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/structure/window/full/reinforced,
 /obj/structure/disposalpipe/segment,
@@ -82228,10 +82187,6 @@
 /obj/docking_port/destination/vox/south_station,
 /turf/space,
 /area)
-"cWM" = (
-/obj/effect/landmark/dungeon_area,
-/turf/space,
-/area)
 "cWN" = (
 /turf/simulated/wall/shuttle/unsmoothed{
 	dir = 1;
@@ -82910,18 +82865,14 @@
 	},
 /area/syndicate_mothership)
 "cYt" = (
-/obj/structure/wc/urinal{
-	pixel_y = 32
-	},
+/obj/structure/wc/urinal,
 /obj/effect/decal/cleanable/vomit,
 /turf/unsimulated/floor{
 	icon_state = "freezerfloor"
 	},
 /area/syndicate_mothership)
 "cYu" = (
-/obj/structure/wc/urinal{
-	pixel_y = 32
-	},
+/obj/structure/wc/urinal,
 /turf/unsimulated/floor{
 	icon_state = "freezerfloor"
 	},
@@ -85748,15 +85699,13 @@
 /area/centcom/suppy)
 "dgw" = (
 /obj/effect/decal/cleanable/cobweb2,
-/turf/unsimulated/floor{
-	icon_state = "platingdmg1"
+/turf/unsimulated/floor/broken{
+	icon_state = "plating"
 	},
 /area/prison/solitary)
 "dgx" = (
 /obj/structure/bed,
-/turf/unsimulated/floor{
-	icon_state = "floorscorched1"
-	},
+/turf/unsimulated/floor/scorched,
 /area/prison/solitary)
 "dgy" = (
 /obj/structure/bed,
@@ -85769,8 +85718,8 @@
 /turf/unsimulated/wall,
 /area/prison/solitary)
 "dgA" = (
-/turf/unsimulated/floor{
-	icon_state = "panelscorched"
+/turf/unsimulated/floor/scorched{
+	icon_state = "plating"
 	},
 /area/prison/solitary)
 "dgB" = (
@@ -85779,8 +85728,8 @@
 	},
 /area/prison/solitary)
 "dgC" = (
-/turf/unsimulated/floor{
-	icon_state = "platingdmg3"
+/turf/unsimulated/floor/broken{
+	icon_state = "plating"
 	},
 /area/prison/solitary)
 "dgD" = (
@@ -85793,12 +85742,6 @@
 /obj/effect/decal/cleanable/blood,
 /turf/unsimulated/floor{
 	name = "plating"
-	},
-/area/prison/solitary)
-"dgF" = (
-/obj/structure/bed,
-/turf/unsimulated/floor{
-	icon_state = "floorscorched2"
 	},
 /area/prison/solitary)
 "dgG" = (
@@ -86143,19 +86086,14 @@
 /area/centcom/suppy)
 "dhD" = (
 /obj/structure/bed,
-/turf/unsimulated/floor{
-	icon_state = "platingdmg3"
-	},
-/area/prison/solitary)
-"dhE" = (
-/turf/unsimulated/floor{
-	icon_state = "platingdmg1"
+/turf/unsimulated/floor/broken{
+	icon_state = "plating"
 	},
 /area/prison/solitary)
 "dhF" = (
 /obj/structure/bed,
-/turf/unsimulated/floor{
-	icon_state = "panelscorched"
+/turf/unsimulated/floor/scorched{
+	icon_state = "plating"
 	},
 /area/prison/solitary)
 "dhG" = (
@@ -86201,15 +86139,8 @@
 	icon_state = "dark neutral stripe"
 	},
 /area/centcom/suppy)
-"dhM" = (
-/turf/unsimulated/floor{
-	icon_state = "floorscorched1"
-	},
-/area/prison/solitary)
 "dhN" = (
-/turf/unsimulated/floor{
-	icon_state = "floorscorched2"
-	},
+/turf/unsimulated/floor/scorched,
 /area/prison/solitary)
 "dhO" = (
 /obj/machinery/dna_scannernew,
@@ -95498,8 +95429,7 @@
 "dVc" = (
 /obj/structure/window/reinforced,
 /obj/structure/window/reinforced{
-	dir = 1;
-	pixel_y = 1
+	dir = 1
 	},
 /obj/structure/grille,
 /obj/structure/window/reinforced{
@@ -110776,6 +110706,11 @@
 	name = "Tradeship Windoor";
 	req_one_access_txt = "140"
 	},
+/obj/item/device/deskbell/signaler/trader{
+	pixel_x = 6;
+	pixel_y = -12;
+	name = "Trade Ship Counter Bell"
+	},
 /turf/simulated/floor{
 	icon_state = "showroomfloor"
 	},
@@ -114847,6 +114782,7 @@
 /obj/structure/bookcase{
 	name = "bookcase (Religious)"
 	},
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "hty" = (
@@ -115301,6 +115237,7 @@
 	dir = 1;
 	pixel_y = -22
 	},
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "lYr" = (
@@ -115369,12 +115306,6 @@
 	oxygen = 0
 	},
 /area/engineering/atmos)
-"mTI" = (
-/obj/machinery/light{
-	dir = 1
-	},
-/turf/space,
-/area)
 "mUP" = (
 /turf/simulated/wall,
 /area/medical/patient_room2)
@@ -115680,6 +115611,7 @@
 /area/hallway/primary/central)
 "pQs" = (
 /obj/structure/table/woodentable,
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "pWL" = (
@@ -115921,6 +115853,7 @@
 	pixel_y = -6
 	},
 /obj/machinery/light/small,
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "rIi" = (
@@ -116249,6 +116182,7 @@
 /obj/structure/bookcase{
 	name = "bookcase (Adult)"
 	},
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "uBa" = (
@@ -116390,6 +116324,7 @@
 /obj/structure/bookcase{
 	name = "bookcase (Non-Fiction)"
 	},
+/obj/abstract/map/spawner/library,
 /turf/simulated/floor/wood,
 /area/library)
 "vaf" = (
@@ -171867,7 +171802,7 @@ aaa
 aaa
 aaa
 aaa
-mTI
+aaa
 aaa
 aaa
 aaa
@@ -268286,7 +268221,7 @@ clc
 bRM
 cno
 coG
-cpI
+cbc
 aaa
 aaj
 aaa
@@ -268788,7 +268723,7 @@ cld
 bRM
 cnp
 coG
-cpI
+cbc
 aaa
 aaj
 aaa
@@ -269290,7 +269225,7 @@ clh
 bRM
 bYs
 coG
-cpK
+cbd
 aaa
 aaj
 aaa
@@ -271809,7 +271744,7 @@ bYs
 cvr
 crE
 cwT
-cpI
+cbc
 aaa
 aaa
 aaa
@@ -272311,7 +272246,7 @@ cur
 bym
 cvX
 cwT
-cpI
+cbc
 aaa
 aaa
 aaa
@@ -272813,7 +272748,7 @@ cus
 cvq
 cvY
 cwT
-cpK
+cbd
 aaa
 aaa
 aaa
@@ -368132,7 +368067,7 @@ aaa
 aaa
 aaa
 aaa
-cWM
+aaa
 aaa
 aaa
 aaa
@@ -404905,7 +404840,7 @@ dgw
 dgV
 dgm
 dgE
-dhM
+dhN
 dgm
 aaa
 aaa
@@ -406410,7 +406345,7 @@ dgm
 dgA
 dgB
 dgm
-dhE
+dgC
 dgB
 dgm
 aaa
@@ -411929,7 +411864,7 @@ aaa
 aaa
 aaa
 dgm
-dgF
+dgx
 dgW
 dgm
 dhG
@@ -412435,7 +412370,7 @@ dgE
 dgB
 dgm
 dgB
-dhE
+dgC
 dgm
 aaa
 aaa
