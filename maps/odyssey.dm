@@ -43,7 +43,6 @@
 		/datum/job/rd,
 		/datum/job/roboticist,
 		/datum/job/scientist,
-		/datum/job/virologist,
 		/datum/job/xenoarchaeologist,
 		/datum/job/xenobiologist,
 		)
@@ -54,6 +53,31 @@
 	shuttle_call_label = "Begin Bluespace Jump"
 	shuttle_cancel_label = "Cancel Bluespace Jump"
 
+	event_whitelist = list(
+		// Odyssey-native events
+		/datum/event/micro_meteors,
+		/datum/event/gib_storm,
+		/datum/event/solar_flare,
+		/datum/event/odyssey_carp_swarm,
+		// Vanilla events with Odyssey overrides
+		/datum/event/radiation_storm/odyssey,
+		/datum/event/viral_infection/odyssey,
+		/datum/event/viral_outbreak/odyssey,
+		/datum/event/grid_check/odyssey,
+		/datum/event/rogue_drone/odyssey,
+		/datum/event/brand_intelligence/odyssey,
+		/datum/event/old_vendotron_teleport/odyssey,
+		/datum/event/hog/odyssey,
+		// Vanilla events that work as-is
+		/datum/event/organ_failure,
+		/datum/event/mass_hallucination,
+		/datum/event/pda_spam,
+		/datum/event/money_lotto,
+		/datum/event/money_hacker,
+		/datum/event/profound_peace,
+		/datum/event/ionstorm
+	)
+
 /datum/map/active/map_ruleset(var/datum/dynamic_ruleset/DR)
 	if(ispath(DR.role_category,/datum/role/blob_overmind))
 		return FALSE
@@ -61,7 +85,58 @@
 		return FALSE
 	else if(ispath(DR.role_category,/datum/role/nuclear_operative))
 		return FALSE
+	else if(ispath(DR.role_category,/datum/role/revolutionary))
+		return FALSE
+	else if(ispath(DR.role_category,/datum/role/traitor/challenger))
+		return FALSE
+	else if(ispath(DR.role_category,/datum/role/vampire))
+		return FALSE
+	else if(ispath(DR.role_category,/datum/role/wizard))
+		return FALSE
 	return ..()
+
+/datum/map/active/proc/get_ship_state()
+	if(!ship_shuttle || !ship_shuttle.current_port)
+		return 0
+	var/datum/virtual_z/vz = ship_shuttle.current_port.get_virtual_z()
+	if(!vz)
+		return 0
+	switch(vz.level_type)
+		if(VZ_TRANSIT)
+			return ODYSSEY_STATE_HYPERSPACE
+		if(VZ_PARKING, VZ_SPACE)
+			return ODYSSEY_STATE_DEEPSPACE
+		if(VZ_PLANET)
+			return ODYSSEY_STATE_PLANETSIDE
+	return 0
+
+/datum/map/active/proc/recently_on_planet()
+	if(!ship_shuttle)
+		return FALSE
+	// Currently docked at a planet?
+	if(ship_shuttle.current_port)
+		var/datum/virtual_z/vz = ship_shuttle.current_port.get_virtual_z()
+		if(vz && vz.level_type == VZ_PLANET)
+			return TRUE
+	// Or was within the last 15 minutes
+	var/datum/shuttle/odyssey/O = ship_shuttle
+	if(istype(O) && O.last_planet_dock_time && (world.time - O.last_planet_dock_time) < 15 MINUTES)
+		return TRUE
+	return FALSE
+
+/datum/map/active/map_specific_event_checks(var/datum/event/E)
+	var/required_state = 0
+	if(istype(E, /datum/event/micro_meteors) || istype(E, /datum/event/gib_storm))
+		required_state = ODYSSEY_STATE_HYPERSPACE
+	else if(istype(E, /datum/event/solar_flare) || istype(E, /datum/event/radiation_storm/odyssey))
+		required_state = ODYSSEY_STATE_HYPERSPACE | ODYSSEY_STATE_DEEPSPACE
+	else if(istype(E, /datum/event/odyssey_carp_swarm) || istype(E, /datum/event/rogue_drone/odyssey))
+		required_state = ODYSSEY_STATE_DEEPSPACE
+	else if(istype(E, /datum/event/hog/odyssey))
+		required_state = ODYSSEY_STATE_PLANETSIDE
+	if(required_state && !(get_ship_state() & required_state))
+		return 0
+	return 1
 
 /datum/zLevel/dynamic/odyssey
 	name = "odyssey"
@@ -77,7 +152,7 @@
 	new_vz.bluespace_jammed = FALSE
 	new_vz.movementJammed = TRUE
 	new_vz.transitionLoops = FALSE
-	new_vz.base_turf = /turf/unsimulated/floor/planetary/grass/jungle
+	new_vz.base_turf = /turf/unsimulated/floor/planetary/concrete
 	new_vz.base_area = /area/surface/nt_outpost
 	new_vz.update_settings()
 	map.vLevels |= new_vz
@@ -99,6 +174,38 @@
 			var/datum/climate/C = SSweather.set_climate(/datum/climate/temperate, vz)
 			vz.register_weather_turfs(C)
 			break
+
+/datum/command_alert/emergency_shuttle_called
+	name = "Bluespace Jump Warning"
+	alert_title = "Priority Announcement"
+	force_report = 1
+	alert = null
+	justification = ""
+
+/datum/command_alert/emergency_shuttle_called/announce()
+	message = "The engines are charging in preparation for the Bluespace Jump. The ship will depart in [round(emergency_shuttle.timeleft()/60)] minutes."
+	if(justification)
+		message += " Justification: [justification]"
+	command_alert(message, alert_title, force_report, alert, noalert, small)
+
+/datum/command_alert/emergency_shuttle_recalled
+	name = "Bluespace Jump Cancelled"
+	alert_title = "Priority Announcement"
+	force_report = 1
+	alert = null
+
+/datum/command_alert/emergency_shuttle_recalled/announce()
+	message = "The Bluespace Jump has been cancelled."
+	command_alert(message, alert_title, force_report, alert, noalert, small)
+
+/datum/command_alert/emergency_shuttle_left
+	name = "Bluespace Jump Initiated"
+	alert_title = "Priority Announcement"
+	force_report = 1
+
+/datum/command_alert/emergency_shuttle_left/announce()
+	message = "The Bluespace Jump has begun. Estimate [round(emergency_shuttle.timeleft()/60,1)] minutes until the NTEV Odyssey docks at Central Command."
+	command_alert(message, alert_title, force_report, alert, noalert, small)
 
 ////////////////////////////////////////////////////////////////
 #undef OUTPOST_MAX_X

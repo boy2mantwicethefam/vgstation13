@@ -2,17 +2,35 @@
 	name = "\improper NTEV Odyssey"
 	icon_state = "shuttle"
 	requires_power = 1
+	base_turf_type = /turf/space // Fallback only; get_base_turf_type() resolves per-vLevel.
+
+// What's outside the ship depends on where the ship is sitting:
+//   - VZ_PLANET: expose the planet surface so a breach reveals the ground.
+//   - VZ_TRANSIT: a visual /turf/space/breach that scrolls in the same direction as the surrounding hyperspace turfs but doesn't teleport mobs.
+//   - everything else (VZ_SPACE, VZ_PARKING): plain /turf/space, since the ship is just sitting in space.
+/area/shuttle/odyssey/get_base_turf_type(turf/T)
+	var/datum/virtual_z/vz = T?.get_virtual_z()
+	if(vz)
+		switch(vz.level_type)
+			if(VZ_PLANET)
+				if(vz.base_turf && vz.base_turf != /turf/space)
+					return vz.base_turf
+				if(vz.planet?.default_baseturf)
+					return vz.planet.default_baseturf
+			if(VZ_TRANSIT)
+				return /turf/space/breach
+	return /turf/space
 
 /area/shuttle/odyssey/bridge
 	name = "\improper Bridge"
 	icon_state = "bridge"
 
-/area/shuttle/odyssey/hallway/fore
-	name = "\improper Fore Hallway"
+/area/shuttle/odyssey/bridge_lobby
+	name = "\improper Bridge Lobby"
 	icon_state = "hallF"
 
-/area/shuttle/odyssey/hallway/fore/lobby
-	name = "\improper Bridge Lobby"
+/area/shuttle/odyssey/hallway/fore
+	name = "\improper Fore Hallway"
 	icon_state = "hallF"
 
 /area/shuttle/odyssey/hallway/aft
@@ -106,29 +124,35 @@
 /area/shuttle/odyssey/exterior
 	name = "\improper Exterior"
 	icon_state = "red"
+	base_turf_type = /turf/space // Inherits the vLevel-aware get_base_turf_type() from the parent area.
 
 /area/surface/nt_outpost
 	name = "\improper Nanotrasen Outpost"
 	icon_state = "bluenew"
 	requires_power = 0
 
-/area/surface/nt_outpost/admin
+/area/odyssey
+	name = "\improper Odyssey"
+	icon_state = "odyssey"
+	requires_power = 0
+
+/area/odyssey/admin
 	name = "\improper Outpost Administration"
 	icon_state = "conference"
 
-/area/surface/nt_outpost/cargo
+/area/odyssey/cargo
 	name = "\improper Outpost Cargo"
 	icon_state = "cargo_bay"
 
-/area/surface/nt_outpost/clinic
+/area/odyssey/clinic
 	name = "\improper Outpost Clinic"
 	icon_state = "virology"
 
-/area/surface/nt_outpost/store
+/area/odyssey/store
 	name = "\improper Outpost Store"
 	icon_state = "blue"
 
-/area/surface/nt_outpost/mineral_processing
+/area/odyssey/mineral_processing
 	name = "\improper Mineral Processing"
 	icon_state = "mining_production"
 

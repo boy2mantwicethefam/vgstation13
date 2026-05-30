@@ -4,6 +4,8 @@
 	layer = TURF_LAYER
 	luminosity = 0
 
+	cardinal_reflect = TRUE
+
 	//for floors, use is_plating(), is_metal_floor() and is_light_floor()
 	var/intact = 1
 	var/turf_flags = 0
@@ -100,6 +102,8 @@
 
 	var/datum/virtual_z/v = null // virtual z level
 
+	var/player_entries = 0
+
 /turf/examine(mob/user)
 	..()
 	if(bullet_marks)
@@ -118,7 +122,6 @@
 	footstep_sound = list()
 	footstep_sound_barefoot = list()
 	footstep_sound_claw = list()
-	turf_reagents = list()
 
 	if(skip_turf_init)
 		return
@@ -209,45 +212,53 @@
 		tracks = new typepath(src)
 	tracks.AddTracks(bloodDNA,comingdir,goingdir,bloodcolor,luminous)
 
+var/highest_player_entry = 0
 
 /turf/Entered(atom/movable/A as mob|obj, atom/OldLoc)
 	if(movement_disabled)
 		to_chat(usr, "<span class='warning'>Movement is admin-disabled.</span>")//This is to identify lag problems
 		return
 
-	//footstep decal code
-	if (istype(A,/mob/living/carbon))
-		var/mob/living/carbon/M = A
-		if(!M.on_foot())
-			return ..()
-		if(istype(M, /mob/living/carbon/human))
-			var/mob/living/carbon/human/H = M
+	if(ismob(A))
+		var/mob/M = A
+		if(M.client)
+			player_entries++
+			if(player_entries > highest_player_entry)
+				highest_player_entry = player_entries
 
-			// Tracking blood
-			var/list/bloodDNA = null
-			var/bloodcolor=""
+		//footstep decal code
+		if (iscarbon(M))
+			var/mob/living/carbon/C = M
+			if(!C.on_foot())
+				return ..()
+			if(istype(M, /mob/living/carbon/human))
+				var/mob/living/carbon/human/H = C
 
-			// Do we have shoes?
-			if(H.shoes)
-				var/obj/item/clothing/shoes/S = H.shoes
-				if(S.track_blood && S.blood_DNA)
-					bloodDNA   = S.blood_DNA
-					bloodcolor = S.blood_color
-					S.track_blood = max(round(S.track_blood - 1, 1),0)
-			else
-				if(H.track_blood && H.feet_blood_DNA)
-					bloodDNA   = H.feet_blood_DNA
-					bloodcolor = H.feet_blood_color
-					H.track_blood = max(round(H.track_blood - 1, 1),0)
+				// Tracking blood
+				var/list/bloodDNA = null
+				var/bloodcolor=""
 
-			if (bloodDNA)
-				AddTracks(H.get_footprint_type(),bloodDNA,H.dir,0,bloodcolor,H.luminous_feet()) // Coming
-				if(Adjacent(OldLoc) && istype(OldLoc,/turf))
-					var/turf/from = OldLoc
-					from.AddTracks(H.get_footprint_type(),bloodDNA,0,H.dir,bloodcolor,H.luminous_feet()) // Going
+				// Do we have shoes?
+				if(H.shoes)
+					var/obj/item/clothing/shoes/S = H.shoes
+					if(S.track_blood && S.blood_DNA)
+						bloodDNA   = S.blood_DNA
+						bloodcolor = S.blood_color
+						S.track_blood = max(round(S.track_blood - 1, 1),0)
+				else
+					if(H.track_blood && H.feet_blood_DNA)
+						bloodDNA   = H.feet_blood_DNA
+						bloodcolor = H.feet_blood_color
+						H.track_blood = max(round(H.track_blood - 1, 1),0)
 
-			bloodDNA = null
-	//end footstep decal code
+				if (bloodDNA)
+					AddTracks(H.get_footprint_type(),bloodDNA,H.dir,0,bloodcolor,H.luminous_feet()) // Coming
+					if(Adjacent(OldLoc) && istype(OldLoc,/turf))
+						var/turf/from = OldLoc
+						from.AddTracks(H.get_footprint_type(),bloodDNA,0,H.dir,bloodcolor,H.luminous_feet()) // Going
+
+				bloodDNA = null
+		//end footstep decal code
 
 
 	//THIS IS OLD TURF ENTERED CODE
@@ -295,7 +306,9 @@
 		if(v.size_x < TRANSITIONEDGE * 2 || v.size_y < TRANSITIONEDGE * 2)
 			v.movementJammed = TRUE // Too small to use any transitioning; fix incorrectly-set param
 			return
-		if (A.vx() <= TRANSITIONEDGE || A.vx() >= (v.x_max - TRANSITIONEDGE) || A.vy() <= TRANSITIONEDGE || A.vy() >= (v.y_max - TRANSITIONEDGE))
+		if(istype(A, /obj/item/projectile/meteor)) // Odyssey's micrometeors spawn from the edge of the map; without this they will immediately transition to a random v-level before striking the shuttle.
+			return
+		if (src.x <= v.x_min + TRANSITIONEDGE || src.x >= v.x_max - TRANSITIONEDGE || src.y <= v.y_min + TRANSITIONEDGE || src.y >= v.y_max - TRANSITIONEDGE)
 			var/list/contents_brought = list()
 			contents_brought += recursive_type_check(A)
 
@@ -326,13 +339,13 @@
 			if(v.transition_crosswrap_v && v.transition_crosswrap_v.len==4)
 				locked_to_current_v=TRUE //prevent shuffling z-level later in the code.
 				randomize_drift_position=FALSE
-				if(A.vy()>=v.y_max - TRANSITIONEDGE) // NORTH
+				if(src.y >= v.y_max - TRANSITIONEDGE) // NORTH
 					move_to_v=v.transition_crosswrap_v[1]
-				else if(A.vy()<=TRANSITIONEDGE) // SOUTH
+				else if(src.y <= v.y_min + TRANSITIONEDGE) // SOUTH
 					move_to_v=v.transition_crosswrap_v[2]
-				else if(A.vx()>=v.x_max - TRANSITIONEDGE) // EAST
+				else if(src.x >= v.x_max - TRANSITIONEDGE) // EAST
 					move_to_v=v.transition_crosswrap_v[3]
-				else if(A.vx()<=TRANSITIONEDGE) // WEST
+				else if(src.x <= v.x_min + TRANSITIONEDGE) // WEST
 					move_to_v=v.transition_crosswrap_v[4]
 
 			// Prevent MoMMIs from leaving the derelict and to ensure Exile Implants work properly.
@@ -368,25 +381,25 @@
 				INVOKE_EVENT(AA, /event/v_transition, "user" = AA, "from_v" = old_v, "to_v" = move_to_v)
 			A.z = move_to_v.z()
 
-			if(src.vx() <= TRANSITIONEDGE)
+			if(src.x <= v.x_min + TRANSITIONEDGE) // entered from src's WEST edge -> appear on dest's EAST edge
 				A.x = move_to_v.x_max - TRANSITIONEDGE - 2
 				if(randomize_drift_position)
-					A.y = rand(TRANSITIONEDGE + 2, move_to_v.y_max - TRANSITIONEDGE - 2)
+					A.y = rand(move_to_v.y_min + TRANSITIONEDGE + 2, move_to_v.y_max - TRANSITIONEDGE - 2)
 
-			else if (A.vx() >= (move_to_v.x_max - TRANSITIONEDGE - 1))
-				A.x = TRANSITIONEDGE + 1
+			else if(src.x >= v.x_max - TRANSITIONEDGE) // EAST -> WEST
+				A.x = move_to_v.x_min + TRANSITIONEDGE + 1
 				if(randomize_drift_position)
-					A.y = rand(TRANSITIONEDGE + 2, move_to_v.y_max - TRANSITIONEDGE - 2)
+					A.y = rand(move_to_v.y_min + TRANSITIONEDGE + 2, move_to_v.y_max - TRANSITIONEDGE - 2)
 
-			else if (src.vy() <= TRANSITIONEDGE)
-				A.y = move_to_v.y_max - TRANSITIONEDGE -2
+			else if(src.y <= v.y_min + TRANSITIONEDGE) // SOUTH -> NORTH
+				A.y = move_to_v.y_max - TRANSITIONEDGE - 2
 				if(randomize_drift_position)
-					A.x = rand(TRANSITIONEDGE + 2, move_to_v.x_max - TRANSITIONEDGE - 2)
+					A.x = rand(move_to_v.x_min + TRANSITIONEDGE + 2, move_to_v.x_max - TRANSITIONEDGE - 2)
 
-			else if (A.vy() >= (move_to_v.y_max - TRANSITIONEDGE - 1))
-				A.y = TRANSITIONEDGE + 1
+			else if(src.y >= v.y_max - TRANSITIONEDGE) // NORTH -> SOUTH
+				A.y = move_to_v.y_min + TRANSITIONEDGE + 1
 				if(randomize_drift_position)
-					A.x = rand(TRANSITIONEDGE + 2, move_to_v.x_max - TRANSITIONEDGE - 2)
+					A.x = rand(move_to_v.x_min + TRANSITIONEDGE + 2, move_to_v.x_max - TRANSITIONEDGE - 2)
 
 			spawn (0)
 				if(was_pulling && MOB) //Carry the object they were pulling over when they transition
@@ -514,6 +527,7 @@
 		A.area_turfs -= src
 		if(istype(A, /area/shuttle))
 			turf_flags |= SHUTTLE_TURF
+	var/preserved_shuttle_flag = turf_flags & SHUTTLE_TURF
 	if (!N || !allow)
 		return
 	remove_particles()
@@ -530,6 +544,11 @@
 	var/datum/virtual_z/old_v = v
 
 	var/old_holomap = holomap_data
+
+	if(light)
+		light.destroy()
+		light = null
+
 //	to_chat(world, "Replacing [src.type] with [N]")
 
 	//The following two lines are an optimization. Without them, each connection would search connections when erased to remove itself.
@@ -588,6 +607,8 @@
 
 		var/turf/simulated/W = new N(src)
 		W.v = old_v
+		if(preserved_shuttle_flag)
+			W.turf_flags |= SHUTTLE_TURF
 		if(defer_edges)
 			W.turf_flags |= DEFER_EDGING
 		if(world.has_round_started())
@@ -616,6 +637,8 @@
 
 		var/turf/W = new N(src)
 		W.v = old_v
+		if(preserved_shuttle_flag)
+			W.turf_flags |= SHUTTLE_TURF
 		if(defer_edges)
 			W.turf_flags |= DEFER_EDGING
 		if(world.has_round_started())
@@ -653,13 +676,17 @@
 	if(!defer_edges)
 		for(var/turf/adj in range(1,src))
 			adj.update_edges()
-	if(istype(loc,/area/surface/jungle) && !istype(original_area,/area/surface/jungle) ) //outdoor areas need to be illuminated.
+	// Drop the cached shuttle-interior lighting overlay when a turf is restored to any outdoor surface area; otherwise the corner lum cache "ghosts" until SSlighting catches up.
+	if(isopensurface(loc) && !isopensurface(original_area))
 		if(.)
 			var/turf/NewTurf=.
 			NewTurf.affecting_lights=list()
 			NewTurf.lighting_clear_overlay()
 			NewTurf.lighting_build_overlay()
-			NewTurf.set_light(SSDayNight.next_light_range,SSDayNight.next_light_power,SSDayNight.current_timeOfDay)
+			var/datum/virtual_z/refresh_vz = NewTurf.get_virtual_z()
+			var/refresh_power = refresh_vz?.current_light_power || SSDayNight.next_light_power
+			var/refresh_tod = refresh_vz?.current_timeOfDay || SSDayNight.current_timeOfDay
+			NewTurf.set_light(SSDayNight.next_light_range, refresh_power, refresh_tod)
 
 
 
@@ -687,8 +714,9 @@
 
 /turf/proc/get_underlying_turf()
 	var/area/A = loc
-	if(A.base_turf_type)
-		return A.base_turf_type
+	var/area_base = A.get_base_turf_type(src)
+	if(area_base)
+		return area_base
 
 	return get_base_turf(z)
 

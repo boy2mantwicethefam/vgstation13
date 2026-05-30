@@ -141,6 +141,25 @@
 		return 0
 	return !density
 
+/obj/structure/shuttle/diag_wall/Bumped(atom/movable/AM)
+	. = ..()
+	var/turf/dest
+	var/turf/adjacent
+	if(get_dir(src,AM) == dir)
+		dest = get_step(AM,counterclockwise_perpendicular_dirs[dir])
+		adjacent = get_step(src,counterclockwise_perpendicular_dirs[dir])
+	else if(get_dir(src,AM) == counterclockwise_perpendicular_dirs[dir])
+		dest = get_step(AM,dir)
+		adjacent = get_step(src,dir)
+	if(!dest || !adjacent)
+		return
+	if(!adjacent.density && !adjacent.has_dense_content())
+		if(!dest.density)
+			var/obj/structure/shuttle/diag_wall/other = locate() in dest
+			if(other && other.dir == opposite_dirs[dir] && !dest.has_dense_content(other))
+				dest = adjacent
+		AM.Move(dest)
+
 /obj/structure/shuttle/diag_wall/ex_act(severity)
 	return
 
@@ -589,8 +608,6 @@
 				user.visible_message("<span class='warning'>[user] cuts through \the [src]'s reinforced plating, exposing the support rods.</span>", \
 					"<span class='notice'>You cut through \the [src]'s reinforced plating, exposing the support rods.</span>", \
 					"<span class='warning'>You hear welding noises.</span>")
-				// Drop the plasteel used in construction
-				new /obj/item/stack/sheet/plasteel(src, 2)
 				// Transition to intermediate state — needs wirecutters next
 				var/turf/simulated/wall/shuttle/reinforced/panel/welded/W_turf = ChangeTurf(/turf/simulated/wall/shuttle/reinforced/panel/welded)
 				W_turf.add_fingerprint(user)
@@ -627,11 +644,12 @@
 			if(!istype(src, /turf/simulated/wall/shuttle/reinforced/panel/welded))
 				return
 			W.playtoolsound(src, 100)
-			user.visible_message("<span class='warning'>[user] cuts through \the [src]'s support rods.</span>", \
-				"<span class='notice'>You cut through \the [src]'s support rods and remove the reinforcement.</span>", \
+			user.visible_message("<span class='warning'>[user] cuts through \the [src]'s support rods, and the loosened plating falls away.</span>", \
+				"<span class='notice'>You cut through \the [src]'s support rods, and the loosened plating falls away.</span>", \
 				"<span class='warning'>You hear snipping sounds.</span>")
-			// Drop the rods used in construction
+			// Drop the materials used in construction
 			new /obj/item/stack/rods(src, 4)
+			new /obj/item/stack/sheet/plasteel(src, 2)
 			// Revert to a black panel shuttle wall
 			var/turf/simulated/wall/shuttle/panel/black/new_wall = ChangeTurf(/turf/simulated/wall/shuttle/panel/black)
 			new_wall.add_fingerprint(user)

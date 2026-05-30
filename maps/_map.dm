@@ -68,6 +68,8 @@
 	var/list/event_blacklist = list(/datum/event/blizzard, /datum/event/omega_blizzard)
 	var/list/event_whitelist = list()
 
+	var/datum/shuttle/ship_shuttle = null //Reference to "the ship" for map-specific features (events, etc). Set by map-specific init code.
+
 	//Map elements that should be loaded together with this map. Stuff like the holodeck areas, etc.
 	var/list/load_map_elements = list()
 	var/list/load_custom_fixedvaults = list() //don't use this
@@ -82,6 +84,10 @@
 	var/planet_size = 0 // If set, overrides planet allocation size for this map
 
 	var/list/daynight_z_lvls = list() //Z-levels that participate in the day/night cycle
+
+//Used for events; override as-needed.
+/datum/map/proc/map_specific_event_checks(var/datum/event/E)
+	return 1
 
 /datum/map/New()
 	. = ..()
@@ -373,12 +379,14 @@ var/global/list/accessable_v_levels = list(
 	name = "jungle surface"
 	base_turf = /turf/unsimulated/floor/planetary/dirt/jungle
 	base_area = /area/surface/jungle/landing //hacky workaround.
+	movementChance = 0
 	planetside = TRUE
 
 /datum/zLevel/jungleunderground
 	name = "jungle underground"
 	base_turf = /turf/unsimulated/floor/planetary/cave/jungle
 	base_area = /area/surface/jungle/underground
+	movementChance = 0
 	planetside = TRUE
 
 /datum/zLevel/junglesurface/mining

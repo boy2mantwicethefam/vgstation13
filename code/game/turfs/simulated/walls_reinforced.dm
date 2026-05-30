@@ -187,6 +187,8 @@
 						new sheet_spawned(get_turf(src))
 					user.visible_message("<span class='warning'>[user] pries off \the [src]'s external cover.</span>", \
 					"<span class='notice'>You pry off \the [src]'s external cover.</span>")
+					if(mineral == "phazon")
+						phazontiles -= src
 					if(type != /turf/simulated/wall/r_wall) //easy hack for mineral walls
 						ChangeTurf(/turf/simulated/wall/r_wall/nocover)
 					else
@@ -348,7 +350,7 @@
 		PK.playtoolsound(src, 100)
 		if(do_after(user, src, (MINE_DURATION * PK.toolspeed) * 50))
 			user.visible_message("<span class='notice'>[user]'s [PK] tears though the last of \the [src], leaving nothing but a girder.</span>", \
-			"<span class='notice'>Your [PK] tears though the last of \the [src], leaving nothing but a girder.</span>")
+			"<span class='notice'>Your [PK.name] tears though the last of \the [src], leaving nothing but a girder.</span>")
 			var/pdiff = performWallPressureCheck(src)
 			if(pdiff)
 				investigation_log(I_ATMOS, "with a pdiff of [pdiff] has been drilled through by [user.real_name] ([formatPlayerPanel(user, user.ckey)]) at [formatJumpTo(get_turf(src))]!")
@@ -391,6 +393,8 @@
 			var/obj/structure/sign/poster/P = O
 			P.roll_and_drop(src)
 
+	if(mineral == "phazon")
+		phazontiles -= src
 	ChangeTurf(dismantle_type)
 	update_near_walls()
 
@@ -417,6 +421,8 @@
 	var/sheet_spawned = get_sheet_type()
 	if(sheet_spawned)
 		new sheet_spawned(get_turf(src))
+	if(mineral == "phazon")
+		phazontiles -= src
 	if(type != /turf/simulated/wall/r_wall) //easy hack for mineral walls
 		ChangeTurf(/turf/simulated/wall/r_wall/nocover)
 	else
@@ -546,6 +552,43 @@
 	icon_state = "clown0"
 	walltype = "clown"
 	mineral = "clown"
+
+/turf/simulated/wall/r_wall/mineral/phazon
+	name = "reinforced phazon wall"
+	desc = "A wall with phazon plating. You can't seem to make out any shapes on it."
+	icon_state = "phazon0"
+	walltype = "phazon"
+	mineral = "phazon"
+	var/spam_flag = 0
+
+/turf/simulated/wall/r_wall/mineral/phazon/New()
+	. = ..()
+	phazontiles += src
+	color = list(1,0,0,0,
+				0,1,0,0,
+				rand(1,5)/10,0,1,0,
+				0,0,0,1,
+				0,0,0,0)
+
+/turf/simulated/wall/r_wall/mineral/phazon/proc/teleport_hit(AM as mob|obj)
+	if(!spam_flag)
+		spam_flag = 1
+		phazon_teleport(AM)
+		color = list(1,0,0,0,
+					0,1,0,0,
+					rand(1,5)/10,0,1,0,
+					0,0,0,1,
+					0,0,0,0)
+		spawn(20)
+			spam_flag = 0
+
+/turf/simulated/wall/r_wall/mineral/phazon/Bumped(AM as mob|obj)
+	..()
+	teleport_hit(AM)
+
+/turf/simulated/wall/r_wall/mineral/phazon/attack_hand(mob/living/user)
+	. = ..()
+	teleport_hit(user)
 
 /turf/simulated/wall/r_wall/mineral/sandstone
 	name = "reinforced sandstone wall"

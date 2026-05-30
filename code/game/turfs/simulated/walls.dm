@@ -85,6 +85,8 @@
 
 	if(peepers)
 		reset_view()
+	if(mineral == "phazon")
+		phazontiles -= src
 	ChangeTurf(dismantle_type)
 	update_near_walls()
 
@@ -229,6 +231,11 @@
 	if(peepers)
 		reset_view()
 
+/turf/simulated/wall/bullet_act(obj/item/projectile/Proj)
+	if(mineral == "diamond" && istype(Proj, /obj/item/projectile/beam))
+		return PROJECTILE_COLLISION_REBOUND
+	. = ..()
+
 /turf/simulated/wall/attackby(obj/item/weapon/W as obj, mob/user as mob)
 	user.delayNextAttack(W.attack_delay)
 	if (!user.dexterity_check())
@@ -356,7 +363,7 @@
 		PK.playtoolsound(src, 100)
 		if(do_after(user, src, (MINE_DURATION * PK.toolspeed) * 10))
 			user.visible_message("<span class='notice'>[user]'s [PK] tears though the last of \the [src], leaving nothing but a girder.</span>", \
-			"<span class='notice'>Your [PK] tears though the last of \the [src], leaving nothing but a girder.</span>")
+			"<span class='notice'>Your [PK.name] tears though the last of \the [src], leaving nothing but a girder.</span>")
 			dismantle_wall()
 
 			var/pdiff = performWallPressureCheck(src)

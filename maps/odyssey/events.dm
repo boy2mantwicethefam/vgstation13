@@ -1,89 +1,344 @@
-#define ODYSSEY_STATE_HYPERSPACE (1<<0)
-#define ODYSSEY_STATE_DEEPSPACE  (1<<1)
+//////// Micro Meteors ////////
+/datum/event/micro_meteors
+	announceWhen = 0
+	endWhen = 10
 
-/*
- * Odyssey Map Events
- *
- * Roll-based events that fire when the shuttle enters hyperspace or deep space.
- * Independent from the standard event scheduler (/datum/event).
- */
+/datum/event/micro_meteors/can_start()
+	return 20
 
-/datum/odyssey_event
-	var/name = "Odyssey Event"
-	var/required_roll = 0       // Minimum roll (1-100) to qualify
-	var/state_flags = 0         // Bitfield: ODYSSEY_STATE_HYPERSPACE, ODYSSEY_STATE_DEEPSPACE
-	var/announce_message = ""   // Warning sent to crew before impact
-	var/announce_delay = 5 SECONDS // Delay between announcement and execution
+/datum/event/micro_meteors/announce()
+	captain_announce("Sensors detect incoming micro-debris field. Brace for impact.")
 
-/datum/odyssey_event/proc/can_fire(datum/shuttle/odyssey/shuttle)
-	return TRUE
+/datum/event/micro_meteors/start()
+	spawn(5 SECONDS)
+		var/count = rand(4, 8)
+		for(var/i = 1 to count)
+			var/meteor_type = /obj/item/projectile/meteor/small/microdebris
+			if(prob(25))
+				meteor_type = /obj/item/projectile/meteor/small
+			odyssey_shuttle.spawn_vz_meteor(meteor_type)
+			sleep(rand(3, 5))
 
-/datum/odyssey_event/proc/announce(datum/shuttle/odyssey/shuttle)
-	if(announce_message)
-		captain_announce(announce_message)
+//////// Gib Storm ////////
+/datum/event/gib_storm
+	announceWhen = 0
+	endWhen = 10
 
-/datum/odyssey_event/proc/execute(datum/shuttle/odyssey/shuttle)
+/datum/event/gib_storm/can_start()
+	return 40
+
+/datum/event/gib_storm/announce()
+	captain_announce("Warning: Unidentified organic matter on collision course. Brace for impact.")
+
+/datum/event/gib_storm/start()
+	spawn(5 SECONDS)
+		var/count = rand(8, 15)
+		for(var/i = 1 to count)
+			odyssey_shuttle.spawn_vz_meteor(/obj/item/projectile/meteor/gib)
+			sleep(rand(2, 4))
+
+//////// Solar Flare ////////
+/datum/event/solar_flare
+	announceWhen = 1
+	endWhen = 5
+
+/datum/event/solar_flare/can_start()
+	return 10
+
+/datum/event/solar_flare/announce()
+	captain_announce("Solar flare detected. Electrical systems may be affected.")
+
+/datum/event/solar_flare/start()
+	var/duration = rand(30 SECONDS, 2 MINUTES)
+	var/list/affected_apcs = list()
+
+	for(var/obj/machinery/power/apc/A in odyssey_shuttle.shuttle_contents())
+		if(A.cell)
+			A.old_charge = A.cell.charge
+			A.cell.charge = 0
+		A.chargemode = 0
+		A.operating = 0
+		A.update()
+		A.update_icon()
+		affected_apcs += A
+
+	spawn(duration)
+		for(var/obj/machinery/power/apc/A in affected_apcs)
+			if(A && !A.gcDestroyed)
+				if(A.cell && A.old_charge)
+					A.cell.charge = A.old_charge / 2
+				A.chargemode = 1
+				A.operating = 1
+				A.update()
+				A.update_icon()
+		captain_announce("Electrical systems have stabilized. Power is being restored.")
+
+//////// Space Carp ////////
+/datum/event/odyssey_carp_swarm
+	announceWhen = 1
+	endWhen = 5
+
+/datum/event/odyssey_carp_swarm/can_start()
+	return 15
+
+/datum/event/odyssey_carp_swarm/announce()
+	captain_announce("Biosensors detect hostile fauna approaching the ship.")
+
+/datum/event/odyssey_carp_swarm/start()
+	var/datum/virtual_z/vz = odyssey_shuttle.current_port.get_virtual_z()
+	if(!vz)
+		return
+
+	var/count = rand(4, 8)
+
+	// Find space turfs near the shuttle
+	var/list/shuttle_turfs = list()
+	for(var/turf/T in odyssey_shuttle.shuttle_contents())
+		shuttle_turfs += T
+	if(!shuttle_turfs.len)
+		return
+
+	var/turf/center = shuttle_turfs[round(shuttle_turfs.len / 2) + 1]
+	var/list/space_turfs = list()
+	for(var/turf/space/SP in range(50, center))
+		if(!(SP in shuttle_turfs))
+			space_turfs += SP
+
+	if(!space_turfs.len)
+		return
+
+	for(var/i = 1 to count)
+		var/turf/T = pick(space_turfs)
+		new /mob/living/simple_animal/hostile/carp(T)
+
+//////////////////////////////////////////////
+//  Odyssey overrides of vanilla events     //
+//////////////////////////////////////////////
+
+//////// Radstorm ////////
+/datum/event/radiation_storm/odyssey
+	safe_zones = list(
+		/area/shuttle/odyssey/maintenance,
+		/area/shuttle/odyssey/hallway/aft,
+		/area/shuttle/odyssey/engineering,
+		/area/shuttle/odyssey/bridge,
+		/area/shuttle/odyssey/bridge_lobby,
+	)
+
+/datum/command_alert/radiation_storm/odyssey
+	name = "Radiation Storm - Warning"
+	alert_title = "Anomaly Alert"
+	alert = 'sound/AI/radiation.ogg'
+	message = "High levels of radiation detected near the ship, ETA in 30 seconds. Please evacuate to the bridge, aft hallway, engineering, or maintenance."
+
+/datum/event/radiation_storm/odyssey/start()
+	spawn()
+		command_alert(/datum/command_alert/radiation_storm/odyssey)
+
+		for(var/area/A in odyssey_shuttle.linked_areas)
+			if(is_safe_zone(A, null))
+				continue
+			A.radiation_alert()
+
+		sleep(30 SECONDS)
+
+		command_alert(/datum/command_alert/radiation_storm/start)
+
+		for(var/i = 0, i < 15, i++)
+			var/irradiationThisBurst = rand(15, 25)
+			for(var/obj/machinery/power/rad_collector/R in rad_collectors)
+				var/turf/T = get_turf(R)
+				if(!T || !odyssey_shuttle.has_area(T.loc) || is_safe_zone(T.loc, T))
+					continue
+				R.receive_pulse(irradiationThisBurst * 50)
+			for(var/obj/item/weapon/am_containment/decelerator/D in decelerators)
+				var/turf/T = get_turf(D)
+				if(!T || !odyssey_shuttle.has_area(T.loc) || is_safe_zone(T.loc, T))
+					continue
+				D.receive_pulse(irradiationThisBurst * 50)
+			for(var/obj/machinery/portable_atmospherics/hydroponics/tray in hydro_trays)
+				var/turf/T = get_turf(tray)
+				if(!T || !odyssey_shuttle.has_area(T.loc) || is_safe_zone(T.loc, T))
+					continue
+				tray.receive_pulse(irradiationThisBurst * 50)
+
+			for(var/mob/living/carbon/human/H in living_mob_list)
+				if(istype(H.loc, /obj/spacepod))
+					continue
+				var/turf/T = get_turf(H)
+				if(!T || !odyssey_shuttle.has_area(T.loc) || is_safe_zone(T.loc, T))
+					continue
+				var/randomMutation = prob(50)
+				var/applied_rads = (H.apply_radiation(irradiationThisBurst, RAD_EXTERNAL) > (irradiationThisBurst / 4))
+				if(randomMutation && applied_rads)
+					var/badMutation = H?.lucky_prob(50, -1/10)
+					if(badMutation)
+						randmutb(H)
+						domutcheck(H, null, MUTCHK_FORCED)
+					else
+						randmutg(H)
+						domutcheck(H, null, MUTCHK_FORCED)
+
+			sleep(25)
+
+		command_alert(/datum/command_alert/radiation_storm/end)
+
+		for(var/area/A in odyssey_shuttle.linked_areas)
+			if(is_safe_zone(A, null))
+				continue
+			A.reset_radiation_alert()
+
+//////// Viral Infection ////////
+/datum/event/viral_infection/odyssey
+
+/datum/event/viral_infection/odyssey/can_start(var/list/active_with_role)
+	if(!map.recently_on_planet())
+		return 0
+	if(active_with_role["Medical"] > 0)
+		return 40
+	return 20
+
+/datum/event/viral_infection/odyssey/announce()
+	biohazard_alert(level)
+	captain_announce("Air filtration systems have detected a minor pathogen onboard the ship.")
+
+//////// Viral Outbreak ////////
+/datum/event/viral_outbreak/odyssey
+
+/datum/event/viral_outbreak/odyssey/can_start(var/list/active_with_role)
+	if(!map.recently_on_planet())
+		return 0
+	if(active_with_role["Medical"] > 0)
+		return 20
+	return 10
+
+/datum/event/viral_outbreak/odyssey/announce()
+	biohazard_alert(level)
+	captain_announce("Air filtration systems have detected a significant biological contaminant onboard the ship.")
+
+//////// Grid Check ////////
+/datum/event/grid_check/odyssey
+	announceWhen = 1
+	endWhen = 3
+
+/datum/event/grid_check/odyssey/setup()
+	endWhen = 3
+
+/datum/event/grid_check/odyssey/announce()
+	captain_announce("Solar microflare detected — brief power ripple expected.")
+
+/datum/event/grid_check/odyssey/start()
+	var/list/affected_apcs = list()
+	for(var/obj/machinery/power/apc/A in odyssey_shuttle.shuttle_contents())
+		if(A.cell)
+			A.old_charge = A.cell.charge
+			A.cell.charge = 0
+		A.operating = 0
+		A.update()
+		A.update_icon()
+		affected_apcs += A
+
+	spawn(30 SECONDS)
+		for(var/obj/machinery/power/apc/A in affected_apcs)
+			if(A && !A.gcDestroyed)
+				if(A.cell && A.old_charge)
+					A.cell.charge = A.old_charge
+				A.operating = 1
+				A.chargemode = 1
+				A.update()
+				A.update_icon()
+
+/datum/event/grid_check/odyssey/end()
 	return
 
-/datum/odyssey_event/proc/fire(datum/shuttle/odyssey/shuttle)
-	announce(shuttle)
-	spawn(announce_delay)
-		execute(shuttle)
+//////// Rogue Drone ////////
+/datum/event/rogue_drone/odyssey
 
-/datum/shuttle/odyssey
-	var/list/possible_events = list()
-	var/odyssey_event_active = FALSE
-	var/obj/docking_port/destination/event_trigger_port = null
-
-/datum/shuttle/odyssey/proc/get_odyssey_state()
-	if(!current_port)
-		return 0
-	var/datum/virtual_z/vz = current_port.get_virtual_z()
-	if(!vz)
-		return 0
-	if(vz.level_type == VZ_TRANSIT)
-		return ODYSSEY_STATE_HYPERSPACE
-	if(vz.level_type == VZ_PARKING)
-		return ODYSSEY_STATE_DEEPSPACE
-	return 0
-
-/datum/shuttle/odyssey/proc/start_event_loop()
-	if(odyssey_event_active)
+/datum/event/rogue_drone/odyssey/start()
+	var/list/shuttle_turfs = list()
+	for(var/turf/T in odyssey_shuttle.shuttle_contents())
+		shuttle_turfs += T
+	if(!shuttle_turfs.len)
 		return
-	var/state = get_odyssey_state()
-	if(!state)
-		return
-	odyssey_event_active = TRUE
-	event_trigger_port = current_port
-	var/first_delay = rand(30 SECONDS, 5 MINUTES)
-	spawn(first_delay)
-		event_roll_loop()
-
-/datum/shuttle/odyssey/proc/stop_event_loop()
-	odyssey_event_active = FALSE
-	event_trigger_port = null
-
-/datum/shuttle/odyssey/proc/event_roll_loop()
-	if(!odyssey_event_active || current_port != event_trigger_port)
-		stop_event_loop()
+	var/turf/center = shuttle_turfs[round(shuttle_turfs.len / 2) + 1]
+	var/list/space_turfs = list()
+	for(var/turf/space/SP in range(50, center))
+		if(!(SP in shuttle_turfs))
+			space_turfs += SP
+	if(!space_turfs.len)
 		return
 
-	var/roll = rand(1, 100)
-	var/state = get_odyssey_state()
-	var/list/eligible = list()
+	var/num = prob(25) ? 0 : rand(2, 6)
+	for(var/i = 0, i < num, i++)
+		var/mob/living/simple_animal/hostile/retaliate/malf_drone/D = new(pick(space_turfs))
+		D.from_event = src
+		drones_list.Add(D)
+		if(prob(25))
+			D.disabled = rand(15, 60)
 
-	for(var/datum/odyssey_event/E in possible_events)
-		if(E.required_roll <= roll && (E.state_flags & state) && E.can_fire(src))
-			eligible += E
+//////// Brand Intelligence ////////
+/datum/event/brand_intelligence/odyssey
 
-	if(eligible.len)
-		var/datum/odyssey_event/picked = pick(eligible)
-		picked.fire(src)
+/datum/event/brand_intelligence/odyssey/start()
+	for(var/obj/machinery/vending/V in odyssey_shuttle.shuttle_contents())
+		vendingMachines.Add(V)
 
-	// Subsequent rolls: 5-15 minute delay
-	var/next_delay = rand(5 MINUTES, 15 MINUTES)
-	spawn(next_delay)
-		event_roll_loop()
+	if(!vendingMachines.len)
+		kill()
+		return
+
+	originMachine = pick(vendingMachines)
+	vendingMachines.Remove(originMachine)
+	originMachine.shut_up = 0
+	originMachine.shoot_inventory = 1
+
+//////// Old Vendotron ////////
+/datum/event/old_vendotron_teleport/odyssey
+
+/datum/event/old_vendotron_teleport/odyssey/vendSpawnDecide()
+	var/static/list/canReplace = list(
+		/obj/machinery/vending/coffee,
+		/obj/machinery/vending/snack,
+		/obj/machinery/vending/cola,
+		/obj/machinery/vending/cigarette,
+		/obj/machinery/vending/discount,
+		/obj/machinery/vending/groans,
+		/obj/machinery/vending/nuka,
+		/obj/machinery/vending/sovietsoda,
+		/obj/machinery/vending/zamsnax,
+	)
+	var/list/possibleVends = list()
+	for(var/obj/machinery/vending/aVendor in odyssey_shuttle.shuttle_contents())
+		if(!is_type_in_list(aVendor, canReplace))
+			continue
+		possibleVends.Add(aVendor)
+	if(!possibleVends.len)
+		message_admins("Old Vendotron event has failed! Could not find any appropriate vending machines to replace.")
+		announceWhen = -1
+		endWhen = 0
+		return
+	return pick(possibleVends)
+
+//////// ;HOG ////////
+/datum/event/hog/odyssey
+
+/datum/event/hog/odyssey/can_start(var/list/active_with_role)
+	return 10
+
+/datum/event/hog/odyssey/start()
+	var/list/turf/simulated/floor/turfs = list()
+	for(var/turf/simulated/floor/F in odyssey_shuttle.shuttle_contents())
+		if(!is_blocked_turf(F))
+			turfs += F
+	if(turfs.len < 2)
+		message_admins("Aborted hog event (odyssey). Not enough open shuttle turfs.")
+		return
+
+	command_alert(/datum/command_alert/hog)
+	var/turf/spawn_turf = pick_n_take(turfs)
+	var/mob/living/simple_animal/rampagingspacehog/ourhog = new(spawn_turf)
+	message_admins("<span class='notice'>Event: hog spawned in at [ourhog.loc] <A HREF='?_src_=holder;adminplayerobservecoodjump=1;X=[ourhog.x];Y=[ourhog.y];Z=[ourhog.z]'>(JMP)</a></span>")
+	ourhog.homes += turfs
 
 /// Spawn a meteor projectile from the edge of the shuttle's current virtual z-level aimed at the shuttle
 /datum/shuttle/odyssey/proc/spawn_vz_meteor(meteor_type)
@@ -106,112 +361,21 @@
 	var/starty
 	switch(dir)
 		if(NORTH)
-			startx = rand(vz.x_min + 2, vz.x_max - 2)
-			starty = vz.y_max - 2
+			startx = rand(vz.x_min + TRANSITIONEDGE, vz.x_max - TRANSITIONEDGE)
+			starty = vz.y_max - TRANSITIONEDGE
 		if(SOUTH)
-			startx = rand(vz.x_min + 2, vz.x_max - 2)
-			starty = vz.y_min + 2
+			startx = rand(vz.x_min + TRANSITIONEDGE, vz.x_max - TRANSITIONEDGE)
+			starty = vz.y_min + TRANSITIONEDGE
 		if(EAST)
-			startx = vz.x_max - 2
-			starty = rand(vz.y_min + 2, vz.y_max - 2)
+			startx = vz.x_max - TRANSITIONEDGE
+			starty = rand(vz.y_min + TRANSITIONEDGE, vz.y_max - TRANSITIONEDGE)
 		if(WEST)
-			startx = vz.x_min + 2
-			starty = rand(vz.y_min + 2, vz.y_max - 2)
-
+			startx = vz.x_min + TRANSITIONEDGE
+			starty = rand(vz.y_min + TRANSITIONEDGE, vz.y_max - TRANSITIONEDGE)
 	var/turf/start = locate(startx, starty, z_level)
 	if(start && target)
 		return new meteor_type(start, target)
 	return null
-
-/datum/odyssey_event/micro_meteors
-	name = "Micro Meteors"
-	required_roll = 65
-	state_flags = ODYSSEY_STATE_HYPERSPACE
-	announce_message = "Sensors detect incoming micro-debris field. Brace for impact."
-
-/datum/odyssey_event/micro_meteors/execute(datum/shuttle/odyssey/shuttle)
-	var/count = rand(2, 4)
-	for(var/i = 1 to count)
-		var/meaty_type = /obj/item/projectile/meteor/small/microdebris
-		if(prob(25))
-			meaty_type = /obj/item/projectile/meteor/small
-		shuttle.spawn_vz_meteor(meaty_type)
-		sleep(rand(3, 5))
-
-/datum/odyssey_event/gib_storm
-	name = "Gib Storm"
-	required_roll = 35
-	state_flags = ODYSSEY_STATE_HYPERSPACE
-	announce_message = "Warning: Unidentified organic matter on collision course."
-
-/datum/odyssey_event/gib_storm/execute(datum/shuttle/odyssey/shuttle)
-	var/count = rand(8, 15)
-	for(var/i = 1 to count)
-		shuttle.spawn_vz_meteor(/obj/item/projectile/meteor/gib)
-		sleep(rand(2, 4))
-
-/datum/odyssey_event/solar_flare
-	name = "Solar Flare"
-	required_roll = 50
-	state_flags = ODYSSEY_STATE_HYPERSPACE | ODYSSEY_STATE_DEEPSPACE
-	announce_message = "Solar flare detected. Electrical systems may be affected."
-
-/datum/odyssey_event/solar_flare/execute(datum/shuttle/odyssey/shuttle)
-	var/duration = rand(1 MINUTES, 3 MINUTES)
-	var/list/affected_apcs = list()
-
-	for(var/obj/machinery/power/apc/A in shuttle.shuttle_contents())
-		A.overload_lighting()
-		if(A.cell)
-			A.cell.charge = 0
-		A.chargemode = 0
-		A.operating = 0
-		A.update()
-		A.update_icon()
-		affected_apcs += A
-
-	spawn(duration)
-		for(var/obj/machinery/power/apc/A in affected_apcs)
-			if(A && !A.gcDestroyed)
-				A.chargemode = 1
-				A.operating = 1
-				A.update()
-				A.update_icon()
-		captain_announce("Electrical systems have stabilized. Power is being restored.")
-
-/datum/odyssey_event/carp_swarm
-	name = "Carp Swarm"
-	required_roll = 40
-	state_flags = ODYSSEY_STATE_DEEPSPACE
-	announce_message = "Biosensors detect hostile fauna approaching the ship."
-
-/datum/odyssey_event/carp_swarm/execute(datum/shuttle/odyssey/shuttle)
-	var/datum/virtual_z/vz = shuttle.current_port.get_virtual_z()
-	if(!vz)
-		return
-
-	var/count = rand(4, 8)
-
-	// Find space turfs near the shuttle
-	var/list/shuttle_turfs = list()
-	for(var/turf/T in shuttle.shuttle_contents())
-		shuttle_turfs += T
-	if(!shuttle_turfs.len)
-		return
-
-	// Use a central shuttle turf as reference point
-	var/turf/center = shuttle_turfs[round(shuttle_turfs.len / 2) + 1]
-	var/list/space_turfs = list()
-	for(var/turf/space/S in range(15, center))
-		if(!(S in shuttle_turfs))
-			space_turfs += S
-
-	if(!space_turfs.len)
-		return
-
-	for(var/i = 1 to count)
-		var/turf/T = pick(space_turfs)
-		new /mob/living/simple_animal/hostile/carp(T)
 
 //////////////////////////////////////////////
 //                                          //
@@ -274,10 +438,4 @@
 	new_xeno.key = applicant.key
 	new_xeno << sound('sound/voice/alienspawn.ogg')
 
-	spawn(rand(90 SECONDS, 120 SECONDS))
-		captain_announce("Unidentified life signs detected aboard the NTEV Odyssey.")
-
 	return new_xeno
-
-#undef ODYSSEY_STATE_HYPERSPACE
-#undef ODYSSEY_STATE_DEEPSPACE

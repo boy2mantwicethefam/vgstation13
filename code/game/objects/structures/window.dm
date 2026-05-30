@@ -41,7 +41,6 @@ var/list/one_way_windows
 
 	var/one_way = 0 //If set to 1, it will act as a one-way window.
 	var/obj/machinery/smartglass_electronics/smartwindow //holds internal machinery
-	var/disperse_coeff = 0.95
 	var/is_fulltile = FALSE
 
 /obj/structure/window/New(loc)
@@ -184,7 +183,7 @@ var/list/one_way_windows
 		health += diff
 		healthcheck(user, FALSE)
 
-		user.visible_message("<span class='notice'>[user] repairs \the [src] with their [S]!</span>", "<span class='notice'>You repair \the [src] with your [S].</span>")
+		user.visible_message("<span class='notice'>[user] repairs \the [src] with their [S]!</span>", "<span class='notice'>You repair \the [src] with your [S.name].</span>")
 
 	else // No diff, but we didn't exit earlier, so mode must be reinforce
 		var/extra_health = health - initial(health)
@@ -194,14 +193,16 @@ var/list/one_way_windows
 		diff = min(S.get_amount() / SILICATE_PER_REINFORCE, (initial(health) * MAX_WINDOW_HEALTH_MULTIPLIER) - (initial(health) + extra_health))
 		health += diff
 		healthcheck(user)
-		user.visible_message("<span class='notice'>[user] reinforced \the [src] with their [S]!</span>", "<span class='notice'>You reinforce \the [src] with your [S].</span>")
+		user.visible_message("<span class='notice'>[user] reinforced \the [src] with their [S]!</span>", "<span class='notice'>You reinforce \the [src] with your [S.name].</span>")
 
 	playsound(src, 'sound/effects/refill.ogg', 10, 1, -6)
 	S.remove_silicate(diff * SILICATE_PER_DAMAGE)
 	return 1
 
 /obj/structure/window/bullet_act(var/obj/item/projectile/Proj)
-
+	if(Proj.destroy)
+		ex_act(1)
+		return ..()
 	adjustHealthLoss(Proj.damage,Proj)
 	. = ..()
 	healthcheck(Proj.firer)

@@ -24,6 +24,10 @@ var/area/space_area
 
 	flags = CAVES_ALLOWED
 
+/// Used for shuttle overrides so we can expose planet or space turfs depending on the shuttle's location.
+/area/proc/get_base_turf_type(turf/T)
+	return base_turf_type
+
 /area/New()
 	area_turfs = list()
 	icon_state = ""
@@ -379,7 +383,7 @@ var/area/space_area
 /area/proc/power_change()
 	for(var/obj/machinery/M in src)	// for each machine in the area
 		M.power_change()				// reverify power status (to update icons etc.)
-	if (fire || eject || party)
+	if (fire || eject || party || radalert)
 		updateicon()
 
 /area/proc/usage(const/chan)
@@ -444,7 +448,7 @@ var/area/space_area
 	for(var/mob/mob_in_obj in Obj.contents)
 		if(istype(mob_in_obj))
 			INVOKE_EVENT(mob_in_obj, /event/mob_area_changed, "mob" = mob_in_obj, "newarea" = src, "oldarea" = oldArea)
-			if(oldArea.v && src.v && (oldArea.v != src.v))
+			if(oldArea?.v && src.v && (oldArea.v != src.v))
 				var/datum/virtual_z/old_v = oldArea.v
 				var/datum/virtual_z/new_v = src.v
 				if(istype(mob_in_obj, /mob/living))
@@ -468,8 +472,8 @@ var/area/space_area
 
 /area/Exited(atom/movable/Obj)
 	var/turf/T = get_turf(Obj)
-	var/datum/virtual_z/new_v = T.v
-	if(!new_v || v != new_v)
+	var/datum/virtual_z/new_v = T?.v
+	if(v && v != new_v)
 		if(istype(Obj, /mob/living))
 			var/mob/living/L = Obj
 			v.mob_exited(L)

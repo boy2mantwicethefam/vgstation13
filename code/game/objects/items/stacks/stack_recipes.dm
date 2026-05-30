@@ -114,6 +114,8 @@
 		for(var/i = 1 to (max_res_amount>1 ? res_amount*multiplier : 1))
 			O = new result_type(construct_loc)
 
+	if(S.arcanetampered)
+		O.arcanetampered = S.arcanetampered
 	S.stop_build(current_work == S.last_work)
 	O.change_dir(user.dir)
 	if(start_unanchored)
@@ -450,6 +452,7 @@ var/list/datum/stack_recipe/metal_recipes = list (
 	new/datum/stack_recipe("spring", /obj/item/spring, 					1, time = 25, one_per_turf = 0, on_floor = 0),
 	new/datum/stack_recipe("cannonball", /obj/item/cannonball/iron, 20, time = 4 SECONDS, one_per_turf = 0, on_floor = 1),
 	new/datum/stack_recipe("frying pan", /obj/item/weapon/reagent_containers/pan, 10, time = 4 SECONDS, one_per_turf = 0, on_floor = 0),
+	new/datum/stack_recipe("gold pan", /obj/item/weapon/reagent_containers/glass/goldpan/metal, 5, time = 3 SECONDS, one_per_turf = 0, on_floor = 0),
 	new/datum/stack_recipe("lunch box", /obj/item/weapon/storage/lunchbox/metal, 1, time = 2 SECONDS, one_per_turf = 0, on_floor = 0),
 	new/datum/stack_recipe("lockless coinbox", /obj/item/weapon/storage/lockbox/coinbox/nolock, 1, time = 2 SECONDS, one_per_turf = 0, on_floor = 0, cargonia_boost = 1),
 	null,
@@ -558,6 +561,7 @@ var/list/datum/stack_recipe/wood_recipes = list (
 	new/datum/stack_recipe("wooden paddle",		/obj/item/weapon/macuahuitl,			1,		time = 50									),
 	new/datum/stack_recipe("baseball bat",		/obj/item/weapon/bat,					10,		time = 8 SECONDS							),
 	new/datum/stack_recipe("wooden club",		/obj/item/weapon/melee/wooden_club,					8,		time = 8 SECONDS					),
+	new/datum/stack_recipe("gold pan", /obj/item/weapon/reagent_containers/glass/goldpan/wood, 5, time = 3 SECONDS, one_per_turf = 0, on_floor = 0),
 	)
 
 /* =========================================================================
