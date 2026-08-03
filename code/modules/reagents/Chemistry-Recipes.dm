@@ -79,7 +79,7 @@
 
 /datum/chemical_reaction/explosion_potassium/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/datum/effect/system/reagents_explosion/e = new()
-	e.set_up(min(round (created_volume/10, 1), 15), holder.my_atom, 0, 0)
+	e.set_up(min(round (created_volume/10, 1), 15), holder.my_atom, 0, 0, whodunnit = usr)
 	e.holder_damage(holder.my_atom)
 	if(isliving(holder.my_atom))
 		e.amount *= 0.5
@@ -609,7 +609,7 @@
 
 /datum/chemical_reaction/nitroglycerin/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/datum/effect/system/reagents_explosion/e = new()
-	e.set_up(round (created_volume/2, 1), holder.my_atom, 0, 0)
+	e.set_up(round (created_volume/2, 1), holder.my_atom, 0, 0, whodunnit = usr)
 	e.holder_damage(holder.my_atom)
 	if(isliving(holder.my_atom))
 		e.amount *= 0.5
@@ -663,6 +663,7 @@
 			var/mob/living/L = holder.my_atom
 			if(L.stat!=DEAD)
 				e.amount *= 0.5
+		e.user = usr
 		e.start()
 		holder.clear_reagents()
 
@@ -2750,6 +2751,9 @@
 	holder.heating(-allowed_consumption*10,T0C) //each .1 unit will reduce the temp of water (or other shc=1 reagent) by 1 degree.
 	holder.remove_reagent(WATER, created_volume-allowed_consumption, safety = 1)
 	holder.add_reagent(ICE, created_volume-allowed_consumption, null, T0C)
+
+/datum/chemical_reaction/ice_to_water/log_reaction()
+	return
 
 ////////////////////////////////////////// COCKTAILS //////////////////////////////////////
 
